@@ -20,7 +20,10 @@ class DatabaseSeeder extends Seeder
             BookingTypeSeeder::class,
         ]);
         $this->call([
-            LocationSeeder::class,
+            UserSeeder::class,
         ]);
+        // $this->call([
+        //     LocationSeeder::class,
+        // ]);
     }
 }

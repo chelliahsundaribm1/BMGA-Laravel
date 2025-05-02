@@ -48,4 +48,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function redirectTo(): string
+    {
+        if ($this->hasRole('admin')) {
+            return '/admin/dashboard';
+        } elseif ($this->hasRole('user')) {
+            return '/user/dashboard';
+        }
+
+        return '/';
+    }
 }

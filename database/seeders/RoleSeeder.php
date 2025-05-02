@@ -29,12 +29,12 @@ class RoleSeeder extends Seeder
 
         // Create roles
         $admin = Role::firstOrCreate(['name' => 'admin']);
-        $customer = Role::firstOrCreate(['name' => 'customer']);
+        $user = Role::firstOrCreate(['name' => 'user']);
         $support = Role::firstOrCreate(['name' => 'support']);
 
         // Assign permissions to roles
         $admin->givePermissionTo(Permission::all());
         $support->givePermissionTo(['manage bookings', 'view dashboard']);
-        $customer->givePermissionTo([]);
+        $user->givePermissionTo([]);
     }
 }
