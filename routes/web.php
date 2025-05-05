@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\FlightsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Support\SupportController;
 use App\Http\Controllers\User\UserController;
@@ -14,7 +15,7 @@ use App\Services\TravClanAuthService;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn() => view('welcome'));
+Route::get('/', [HomeController::class, 'index']);
 
 Route::get('lang/{locale}', function ($locale) {
     $supportedLocales = ['en', 'fr', 'es'];
