@@ -34,3 +34,11 @@
         </div>
     </body>
 </html>
+
+@if(session('show_login_modal'))
+    <script>
+        alert("Please log in to continue."); // replace with modal trigger if using Bootstrap/Livewire
+        window.location.href = "{{ route('login') }}";
+    </script>
+@endif
+
