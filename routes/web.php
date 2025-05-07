@@ -59,7 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return match (true) {
             $user->hasRole('admin')    => view('admin.dashboard'),
             $user->hasRole('support')  => view('support.dashboard'),
-            $user->hasRole('customer') => view('user.dashboard'),
+            $user->hasRole('user') => view('user.dashboard'),
             default => abort(403, 'Unauthorized'),
         };
     })->name('dashboard');
@@ -114,16 +114,23 @@ Route::middleware(['check.login.modal'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/listing', [AdminController::class, 'listing'])->name('listing');
+    
+    // Bookings
     Route::get('/bookings/hotel', [AdminController::class, 'hotelbooking'])->name('bookings.hotel');
     Route::get('/bookings/tour', [AdminController::class, 'tourbooking'])->name('bookings.tour');
     Route::get('/bookings/flight', [AdminController::class, 'flightbooking'])->name('bookings.flight');
     Route::get('/bookings/car', [AdminController::class, 'carbooking'])->name('bookings.car');
     Route::get('/bookings/cruise', [AdminController::class, 'cruisebooking'])->name('bookings.cruise');
+
+    // Other Sections
+    Route::get('/listing', [AdminController::class, 'listing'])->name('listing');
     Route::get('/enquires', [AdminController::class, 'enquires'])->name('enquires');
     Route::get('/earnings', [AdminController::class, 'earnings'])->name('earnings');
     Route::get('/reviews', [AdminController::class, 'reviews'])->name('reviews');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::get('/account-settings', [AdminController::class, 'account_settings'])->name('account-settings');
+    Route::get('/security-settings', [AdminController::class, 'security_settings'])->name('security-settings');
+    Route::get('/plans-billing', [AdminController::class, 'plans_billing'])->name('plans-billings');
 });
 
 /*
@@ -131,9 +138,26 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 | User Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-    // Add more user-only routes here
+
+    // My Bookings
+    Route::get('/bookings/flights', [UserController::class, 'flights_bookings'])->name('bookings.flights');
+    Route::get('/bookings/hotels', [UserController::class, 'hotels_bookings'])->name('bookings.hotels');
+    Route::get('/bookings/cars', [UserController::class, 'cars_bookings'])->name('bookings.cars');
+    Route::get('/bookings/cruises', [UserController::class, 'cruises_bookings'])->name('bookings.cruises');
+    Route::get('/bookings/tours', [UserController::class, 'tours_bookings'])->name('bookings.tours');
+
+    // Other Sections
+    Route::get('/reviews', [UserController::class, 'my_reviews'])->name('reviews');
+    Route::get('/messages', [UserController::class, 'messages'])->name('messages');
+    Route::get('/wishlist', [UserController::class, 'wishlist'])->name('wishlist');
+    Route::get('/wallet', [UserController::class, 'wallet'])->name('wallet');
+    Route::get('/payments', [UserController::class, 'payments'])->name('payments');
+    Route::get('/profile', [UserController::class, 'my_profile'])->name('profile');
+    Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications');
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
 });
 
 /*

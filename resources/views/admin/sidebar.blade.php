@@ -31,33 +31,70 @@
                         <i class="isax isax-menu-14 me-2"></i>Listings
                     </a>
                 </li>
+
+                @php
+                    $bookingRoutes = [
+                        'admin.bookings.hotel*',
+                        'admin.bookings.car*',
+                        'admin.bookings.cruise*',
+                        'admin.bookings.tour*',
+                        'admin.bookings.flight*',
+                    ];
+                @endphp
                 <li class="submenu">
-                    <a href="javascript:void(0);" class="d-block"><i class="isax isax-calendar-tick5 me-2"></i><span>Bookings</span><span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);" class="d-block {{ Route::is($bookingRoutes) ? 'active subdrop' : '' }}"><i class="isax isax-calendar-tick5 me-2"></i><span>Bookings</span><span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('admin.bookings.hotel') }}">Hotels</a></li>
-                        <li><a href="{{ route('admin.bookings.car') }}">Cars</a></li>
-                        <li><a href="{{ route('admin.bookings.cruise') }}">Cruise</a></li>
-                        <li><a href="{{ route('admin.bookings.tour') }}">Tour</a></li>
-                        <li><a href="{{ route('admin.bookings.flight') }}">Flights</a></li>
+                      
+                        <li>
+                            <a href="{{ route('admin.bookings.hotel') }}" 
+                                class="fs-14 d-inline-flex align-items-center {{ Route::is('admin.bookings.hotel') ? 'active' : '' }}">
+                                Hotels
+                            </a>
+                            </li>
+                              <li>
+                            <a href="{{ route('admin.bookings.flight') }}" 
+                                class="fs-14 d-inline-flex align-items-center {{ Route::is('admin.bookings.flight') ? 'active' : '' }}">
+                                Flights
+                            </a>
+                        </li>
+                            <li>
+                            <a href="{{ route('admin.bookings.car') }}" 
+                                class="fs-14 d-inline-flex align-items-center {{ Route::is('admin.bookings.car') ? 'active' : '' }}">
+                                Cars
+                            </a>
+                            </li>
+                            <li>
+                            <a href="{{ route('admin.bookings.cruise') }}" 
+                                class="fs-14 d-inline-flex align-items-center {{ Route::is('admin.bookings.cruise') ? 'active' : '' }}">
+                                Cruise
+                            </a>
+                            </li>
+                            <li>
+                            <a href="{{ route('admin.bookings.tour') }}" 
+                                class="fs-14 d-inline-flex align-items-center {{ Route::is('admin.bookings.tour') ? 'active' : '' }}">
+                                Tour
+                            </a>
+                            </li>
+                        
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ route('admin.enquires') }}" class="d-flex align-items-center">
+                    <a href="{{ route('admin.enquires') }}" class="d-flex align-items-center {{ request()->routeIs('admin.enquires') ? 'active' : '' }}">
                         <i class="isax isax-magic-star5 me-2"></i>Enquiries
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.earnings') }}" class="d-flex align-items-center">
+                    <a href="{{ route('admin.earnings') }}" class="d-flex align-items-center {{ request()->routeIs('admin.earnings') ? 'active' : '' }}">
                         <i class="isax isax-wallet-add-15 me-2"></i>Earnings
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.reviews') }}" class="d-flex align-items-center">
+                    <a href="{{ route('admin.reviews') }}" class="d-flex align-items-center {{ request()->routeIs('admin.reviews') ? 'active' : '' }}">
                         <i class="isax isax-magic-star5 me-2"></i>Reviews
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.settings') }}" class="d-flex align-items-center">
+                    <a href="{{ route('admin.settings') }}" class="d-flex align-items-center {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                         <i class="isax isax-setting-25"></i> Settings
                     </a>
                 </li>

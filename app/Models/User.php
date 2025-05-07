@@ -59,4 +59,14 @@ class User extends Authenticatable
 
         return '/';
     }
+
+    public function providers()
+    {
+        return $this->hasMany(UserProvider::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
 }

@@ -48,7 +48,7 @@
                                     </span>
                                     <p class="mb-1">Total Listings</p>
                                     <h5 class="mb-2">23</h5>
-                                    <a href="agent-listings.html" class="fs-14 link-primary text-decoration-underline">View All</a>   
+                                    <a href="{{ route('admin.listing') }}" class="fs-14 link-primary text-decoration-underline">View All</a>   
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                                     </span>
                                     <p class="mb-1">Total Reviews</p>
                                     <h5 class="mb-2">62</h5>
-                                    <a href="agent-review.html" class="fs-14 link-primary text-decoration-underline">View All</a>   
+                                    <a href="{{ route('admin.reviews') }}" class="fs-14 link-primary text-decoration-underline">View All</a>   
                                 </div>
                             </div>
                         </div>

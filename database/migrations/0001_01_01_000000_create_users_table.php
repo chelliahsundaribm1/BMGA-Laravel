@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_picture')->nullable(); 
             $table->string('jwt_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -26,6 +28,17 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('social_accounts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('provider'); 
+            $table->string('provider_id'); 
+            $table->string('token')->nullable(); 
+            $table->timestamps();
+
+            $table->unique(['provider', 'provider_id']); // Prevent duplicate entries
         });
 
         Schema::create('sessions', function (Blueprint $table) {

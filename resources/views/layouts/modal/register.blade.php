@@ -11,7 +11,7 @@
                             <h5 class="mb-1">Sign Up</h5>
                             <p class="mb-3">Create your DreamsTour Account</p>
                         </div>
-                        <div class="mb-2">
+                        {{-- <div class="mb-2">
                             <label class="form-label">Name</label>
                             <div class="input-icon">
                                 <span class="input-icon-addon">
@@ -24,7 +24,38 @@
                                         <strong>{{ $errors->get('name') }}</strong>
                                     </span>
                                 @enderror
+                        </div> --}}
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <i class="isax isax-user"></i> 
+                                    </span>
+                                    <input type="text" id="first_name" name="first_name" class="form-control form-control-lg" placeholder="First Name">
+                                </div>
+                                @error('first_name')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <i class="isax isax-user"></i> 
+                                    </span>
+                                    <input type="text" id="last_name" name="last_name" class="form-control form-control-lg" placeholder="Last Name">
+                                </div>
+                                @error('last_name')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
+
                         
                         <div class="mb-2">
                             <label class="form-label">Email</label>

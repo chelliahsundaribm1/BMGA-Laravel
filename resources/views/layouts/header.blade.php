@@ -5,10 +5,10 @@
                         <div class="offcanvas-detail">
                             <div class="offcanvas-head">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <a href="index.html" class="black-logo-responsive">
+                                    <a href="{{ route('home') }}" class="black-logo-responsive">
                                         <img src="assets/img/logo-dark.svg" alt="logo-img">
                                     </a>
-                                    <a href="index.html" class="white-logo-responsive">
+                                    <a href="{{ route('home') }}" class="white-logo-responsive">
                                         <img src="assets/img/logo.svg" alt="logo-img">
                                     </a>
                                     <div class="offcanvas-close">
@@ -67,10 +67,10 @@
                 <div class="header-nav">
                     <div class="main-menu-wrapper">
                         <div class="navbar-logo">
-                            <a class="logo-white header-logo" href="index.html">
+                            <a class="logo-white header-logo" href="{{ route('home') }}">
                                 <img src="assets/img/logo.svg" class="logo" alt="Logo">
                             </a>
-                            <a class="logo-dark header-logo" href="index.html">
+                            <a class="logo-dark header-logo" href="{{ route('home') }}">
                                 <img src="assets/img/logo-dark.svg" class="logo" alt="Logo">
                             </a>
                         </div>
@@ -122,7 +122,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end p-3">
                                     <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium p-2" href="agent-dashboard.html">Dashboard</a>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium p-2" href="{{ route('dashboard') }}">Dashboard</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium p-2" href="agent-hotel-booking.html">My Booking</a>

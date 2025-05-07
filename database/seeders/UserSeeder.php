@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@bmga.com'],
             [
-                'name' => 'Admin User',
+                'first_name' => 'Admin',
+                'last_name' => 'User',
                 'email' => 'admin@bmga.com',
                 'password' => Hash::make('12345678'), 
             ]
@@ -29,7 +30,8 @@ class UserSeeder extends Seeder
         $support = User::firstOrCreate(
             ['email' => 'support@bmga.com'],
             [
-                'name' => 'Support Staff',
+                'first_name' => 'Support',
+                'last_name' => 'Staff',
                 'password' => Hash::make('12345678'),
             ]
         );
@@ -39,7 +41,8 @@ class UserSeeder extends Seeder
         $user = User::firstOrCreate(
             ['email' => 'user@bmga.com'],
             [
-                'name' => 'Demo User',
+                'first_name' => 'Demo',
+                'last_name' => 'User',
                 'password' => Hash::make('12345678'),
             ]
         );

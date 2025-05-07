@@ -61,4 +61,19 @@ class AdminController extends Controller
     {
         return view('admin.settings');
     }
+
+    public function account_settings()
+    {
+        return view('admin.account_settings');
+    }
+
+    public function security_settings()
+    {
+        return view('admin.security_settings');
+    }
+
+    public function plans_billing()
+    {
+        return view('admin.plans_billings');
+    }
 }
