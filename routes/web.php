@@ -15,7 +15,17 @@ use App\Services\TravClanAuthService;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/aboutus', [HomeController::class, 'aboutus'])->name('aboutus');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/flight', [HomeController::class, 'flight'])->name('flight');
+Route::get('/hotel', [HomeController::class, 'hotel'])->name('hotel');
+Route::get('/car', [HomeController::class, 'car'])->name('car');
+Route::get('/cruise', [HomeController::class, 'cruise'])->name('cruise');
+Route::get('/tour', [HomeController::class, 'tour'])->name('tour');
+Route::get('/comingsoon', [HomeController::class, 'comingsoon'])->name('comingsoon');
+Route::get('/location-search', [HomeController::class, 'searchLocations']);
+
 
 Route::get('lang/{locale}', function ($locale) {
     $supportedLocales = ['en', 'fr', 'es'];
@@ -91,6 +101,8 @@ Route::middleware(['check.login.modal'])->group(function () {
         Route::get('/book/{itineraryCode}', [FlightsController::class, 'bookFlight'])->name('book');
         Route::get('/details/{bookingCode}', [FlightsController::class, 'getBookingDetails'])->name('details');
         Route::get('/balance', [FlightsController::class, 'getWalletBalance'])->name('balance');
+        Route::get('/flight_details', [FlightsController::class, 'showFlightResults'])->name('flight_details');
+
     });
 });
 
@@ -99,9 +111,19 @@ Route::middleware(['check.login.modal'])->group(function () {
 | Admin Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    // Add more admin-only routes here
+    Route::get('/listing', [AdminController::class, 'listing'])->name('listing');
+    Route::get('/bookings/hotel', [AdminController::class, 'hotelbooking'])->name('bookings.hotel');
+    Route::get('/bookings/tour', [AdminController::class, 'tourbooking'])->name('bookings.tour');
+    Route::get('/bookings/flight', [AdminController::class, 'flightbooking'])->name('bookings.flight');
+    Route::get('/bookings/car', [AdminController::class, 'carbooking'])->name('bookings.car');
+    Route::get('/bookings/cruise', [AdminController::class, 'cruisebooking'])->name('bookings.cruise');
+    Route::get('/enquires', [AdminController::class, 'enquires'])->name('enquires');
+    Route::get('/earnings', [AdminController::class, 'earnings'])->name('earnings');
+    Route::get('/reviews', [AdminController::class, 'reviews'])->name('reviews');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
 });
 
 /*

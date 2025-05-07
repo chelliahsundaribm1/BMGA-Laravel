@@ -5,7 +5,8 @@
                     <a href="javascript:void(0);" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x fs-20"></i></a>
                 </div>
                 <div class="modal-body p-4 pt-0">
-                    <form action="index.html">
+                      <form method="POST" action="{{ route('register') }}">
+                        @csrf
                         <div class="text-center border-bottom mb-3">
                             <h5 class="mb-1">Sign Up</h5>
                             <p class="mb-3">Create your DreamsTour Account</p>
@@ -14,19 +15,30 @@
                             <label class="form-label">Name</label>
                             <div class="input-icon">
                                 <span class="input-icon-addon">
-									<i class="isax isax-user"></i>
+									<i class="isax isax-user"></i> 
                                 </span>
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter Full Name">
+                                <input type="text" id="name" name="name" class="form-control form-control-lg" placeholder="Enter Full Name">
                             </div>
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->get('name') }}</strong>
+                                    </span>
+                                @enderror
                         </div>
+                        
                         <div class="mb-2">
                             <label class="form-label">Email</label>
                             <div class="input-icon">
                                 <span class="input-icon-addon">
 									<i class="isax isax-message"></i>
                                 </span>
-                                <input type="email" class="form-control form-control-lg" placeholder="Enter Email">
+                                <input type="email" name="email" id="email" class="form-control form-control-lg" placeholder="Enter Email">
                             </div>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->get('email') }}</strong>
+                                    </span>
+                                @enderror
                         </div>
                         <div class="mb-2">
                             <label class="form-label">Password</label>
@@ -34,10 +46,15 @@
                                 <span class="input-icon-addon">
 									<i class="isax isax-lock"></i>
                                 </span>
-                                <input type="password" class="form-control form-control-lg pass-input" placeholder="Enter Password">
+                                <input type="password" id="password" name="password" class="form-control form-control-lg pass-input" placeholder="Enter Password" required autocomplete="new-password">
                                 <span class="input-icon-addon toggle-password">
 									<i class="isax isax-eye-slash"></i>
                                 </span>
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->get('password') }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-2">
@@ -46,10 +63,15 @@
                                 <span class="input-icon-addon">
 									<i class="isax isax-lock"></i>
                                 </span>
-                                <input type="password" class="form-control form-control-lg pass-input" placeholder="Enter Password">
+                                <input for="password_confirmation" type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg pass-input" placeholder="Enter Password" required autocomplete="new-password">
                                 <span class="input-icon-addon toggle-password">
 									<i class="isax isax-eye-slash"></i>
                                 </span>
+                                @error('password_confirmation')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->get('password_confirmation') }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mt-3 mb-3">

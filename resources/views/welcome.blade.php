@@ -1,4 +1,4 @@
-@extends('layouts.user.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -61,7 +61,7 @@
                                 <div>
                                     <div class="tab-content">
                                         <div class="tab-pane fade active show" id="flight">
-                                            <form action="flight-grid.html">
+                                            <form action="{{ route('flights.search') }}" method="GET" class="flight-form" id="flight-form" data-url="{{ route('flights.search') }}">
                                                 <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                                     <div class="d-flex align-items-center flex-wrap">
                                                         <div class="form-check d-flex align-items-center me-3 mb-2">
@@ -105,33 +105,9 @@
                                                                         <li class="border-bottom">
                                                                             <a class="dropdown-item" href="javascript:void(0);">
                                                                                 <h6 class="fs-16 fw-medium">Newyork</h6>
-                                                                                <p>Ken International Airport</p>
                                                                             </a>
                                                                         </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Boston</h6>
-                                                                                <p>Boston Logan International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Northern Virginia</h6>
-                                                                                <p>Dulles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Los Angeles</h6>
-                                                                                <p>Los Angeles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Orlando</h6>
-                                                                                <p>Orlando International Airport</p>
-                                                                            </a>
-                                                                        </li>
+                                                                        
                                                                     </ul>
                                                                 </div>
                                                             </div>
@@ -158,30 +134,7 @@
                                                                                 <p>Ken International Airport</p>
                                                                             </a>
                                                                         </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Boston</h6>
-                                                                                <p>Boston Logan International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Northern Virginia</h6>
-                                                                                <p>Dulles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Los Angeles</h6>
-                                                                                <p>Los Angeles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Orlando</h6>
-                                                                                <p>Orlando International Airport</p>
-                                                                            </a>
-                                                                        </li>
+                                                                       
                                                                     </ul>
                                                                 </div>
                                                             </div>
@@ -684,8 +637,12 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane fade" id="Cars">                                          
-                                            <form action="car-grid.html">
+                                        <div class="tab-pane fade" id="Cars"> 
+                                            <div class="text-center py-5">
+                                                <h3 class="text-muted">Cars Search - Coming Soon</h3>
+                                                <p class="text-secondary col-md-6 mx-auto">We are working hard to bring you the best cars booking options. Stay tuned!</p>
+                                            </div>                                           
+                                            {{-- <form action="car-grid.html">
                                                 <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                                     <div class="d-flex align-items-center flex-wrap">
                                                         <div class="form-check d-flex align-items-center me-3 mb-2">
@@ -886,10 +843,15 @@
                                                     </div>
                                                     <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                 </div>
-                                            </form>
+                                            </form> --}}
                                         </div>
-                                        <div class="tab-pane fade" id="Cruise">                                          
-                                            <form action="cruise-grid.html">
+                                        <div class="tab-pane fade" id="Cruise">  
+
+                                            <div class="text-center py-5">
+                                                <h3 class="text-muted">Cruise Search - Coming Soon</h3>
+                                                <p class="text-secondary col-md-6 mx-auto">We are working hard to bring you cruise booking options. Stay tuned!</p>
+                                            </div>                             
+                                            {{-- <form action="cruise-grid.html">
                                                 <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                                     <h6 class="fw-medium fs-16 mb-2">Search For Cruise</h6>
                                                 </div>
@@ -1063,10 +1025,14 @@
                                                     </div>
                                                     <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                 </div>
-                                            </form>
+                                            </form> --}}
                                         </div>
-                                        <div class="tab-pane fade" id="Tour">                                          
-                                            <form action="tour-grid.html">
+                                        <div class="tab-pane fade" id="Tour">   
+                                            <div class="text-center py-5">
+                                                <h3 class="text-muted">Tour Search - Coming Soon</h3>
+                                                <p class="text-secondary col-md-6 mx-auto">We are working hard to bring you the best booking options. Stay tuned!</p>
+                                            </div>                                           
+                                            {{-- <form action="tour-grid.html">
                                                 <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                                     <h6 class="fw-medium fs-16 mb-2">Search holiday packages & trips</h6>
                                                 </div>
@@ -1206,7 +1172,7 @@
                                                     </div>
                                                     <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                 </div>
-                                            </form>
+                                            </form> --}}
                                         </div>
                                     </div>
                                 </div>

@@ -288,4 +288,52 @@ class FlightsController extends Controller
             return response()->json(['error' => 'Something went wrong.'], 500);
         }
     }
+
+
+    public function showFlightResults(Request $request)
+{
+    $validated = $request->validate([
+        'Radio' => 'required|in:oneway,roundtrip',
+        'quantity' => 'required|array|min:1|max:3',
+        'cabin-class' => 'required|in:Economy,Business,First'
+    ]);
+
+    // Map UI inputs to API structure
+    $journeyType = $validated['Radio'] === 'oneway' ? 1 : 2;
+    $flightCabinClass = match($validated['cabin-class']) {
+        'Economy' => 1,
+        'Business' => 2,
+        'First' => 3,
+    };
+
+    $payload = [
+        'directFlight' => false, // or true based on user input
+        'adultCount' => (int) $validated['quantity'][0] ?? 1,
+        'childCount' => (int) $validated['quantity'][1] ?? 0,
+        'infantCount' => (int) $validated['quantity'][2] ?? 0,
+        'journeyType' => $journeyType,
+        'origin' => 'DEL', // Placeholder – replace with real input
+        'destination' => 'DXB', // Placeholder – replace with real input
+        'preferredDepartureTime' => now()->addDays(7)->format('Y-m-d\TH:i:s'),
+        'preferredReturnDepartureTime' => $journeyType === 2 ? now()->addDays(14)->format('Y-m-d\TH:i:s') : null,
+        'flightCabinClass' => $flightCabinClass,
+    ];
+
+    $token = $this->getTravclanToken();
+    if (!$token) {
+        return back()->with('error', 'Travclan token not available');
+    }
+
+    if ($journeyType === 1) {
+        unset($payload['preferredReturnDepartureTime']);
+    }
+
+    $response = Http::withHeaders($this->travclanHeaders($token))
+        ->post('https://flight-aggregator-api-sandbox.travclan.com/api/v2/flights/search', $payload);
+
+    $flights = $response->json()['data'] ?? [];
+
+    return view('user.flights', compact('flights'));
+}
+
 }

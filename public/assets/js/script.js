@@ -1663,7 +1663,7 @@ Template Name: DreamsTour - Bootstrap Template
 		function setCountdown() {
 
 			// Set countdown date
-			let countdownDate = new Date('Dec 30, 2024 16:00:00').getTime();
+			let countdownDate = new Date('Dec 30, 2025 16:00:00').getTime();
 
 			// Update countdown every second
 			let updateCount = setInterval(function () {
