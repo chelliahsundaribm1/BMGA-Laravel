@@ -3,11 +3,11 @@
     <div class="card user-sidebar agent-sidebar mb-4 mb-lg-0">
         <div class="card-header user-sidebar-header text-center bg-gray-transparent">
             <div class="agent-profile d-inline-flex">
-                <img src="{{ asset('assets/img/users/user-43.jpg') }}" alt="image" class="img-fluid rounded-circle">
+                <img src="{{ $company && $company->favicon ? asset($company->favicon) : asset('assets/default/tempLogo.png') }}" alt="image" class="img-fluid rounded-circle">
                 <a href="{{ route('admin.settings') }}" class="avatar avatar-sm rounded-circle btn btn-primary d-flex align-items-center justify-content-center p-0"><i class="isax isax-edit-2 fs-14"></i></a>
             </div>
-            <h6 class="fs-16">Chris Foxy</h6>
-            <p class="fs-14 mb-2">Member Since 10 May 2025</p>
+            <h6 class="fs-16">{{ $company->name }}</h6>
+            <p class="fs-14 mb-2">{{ $company->email }}</p>
             <div class="d-flex align-items-center justify-content-center notify-item">
                 <a href="#" class="rounded-circle btn btn-white d-flex align-items-center justify-content-center p-0 me-2 position-relative">
                     <i class="isax isax-notification-bing5 fs-20"></i>

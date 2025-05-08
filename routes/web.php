@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\FlightsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -131,6 +132,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/account-settings', [AdminController::class, 'account_settings'])->name('account-settings');
     Route::get('/security-settings', [AdminController::class, 'security_settings'])->name('security-settings');
     Route::get('/plans-billing', [AdminController::class, 'plans_billing'])->name('plans-billings');
+
+    // Company
+    Route::post('/company/update', [CompanyController::class, 'update'])->name('company.update');
+    Route::post('/company/accounts', [CompanyController::class, 'updateaccounts'])->name('company.accounts');
+
 });
 
 /*

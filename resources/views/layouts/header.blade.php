@@ -6,10 +6,10 @@
                             <div class="offcanvas-head">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <a href="{{ route('home') }}" class="black-logo-responsive">
-                                        <img src="assets/img/logo-dark.svg" alt="logo-img">
+                                        <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" alt="logo-img">
                                     </a>
                                     <a href="{{ route('home') }}" class="white-logo-responsive">
-                                        <img src="assets/img/logo.svg" alt="logo-img">
+                                        <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" alt="logo-img">
                                     </a>
                                     <div class="offcanvas-close">
                                         <i class="ti ti-x"></i>
@@ -68,10 +68,10 @@
                     <div class="main-menu-wrapper">
                         <div class="navbar-logo">
                             <a class="logo-white header-logo" href="{{ route('home') }}">
-                                <img src="assets/img/logo.svg" class="logo" alt="Logo">
+                                <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" class="logo" alt="Logo">
                             </a>
                             <a class="logo-dark header-logo" href="{{ route('home') }}">
-                                <img src="assets/img/logo-dark.svg" class="logo" alt="Logo">
+                                <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" class="logo" alt="Logo">
                             </a>
                         </div>
                         <nav id="mobile-menu">

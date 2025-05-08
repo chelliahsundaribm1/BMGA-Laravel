@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
+
+    public function __construct()
+    {
+        $company = Company::first() ?? new Company();
+        View::share('company', $company);
+    }
     public function dashboard()
     {
         return view('admin.dashboard');

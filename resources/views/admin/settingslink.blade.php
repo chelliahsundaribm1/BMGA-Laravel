@@ -1,5 +1,5 @@
 <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings') ? 'active' : '' }} ps-3">
-    <i class="isax isax-user-octagon me-2"></i>Edit Profile
+    <i class="isax isax-user-octagon me-2"></i>Edit Website
 </a>
 
 <a href="{{ route('admin.account-settings') }}" class="{{ request()->routeIs('admin.account-settings') ? 'active' : '' }}">

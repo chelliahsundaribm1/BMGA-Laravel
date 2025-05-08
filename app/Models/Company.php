@@ -27,4 +27,4 @@ class Company extends Model
         'meta_title',
         'meta_description',
     ];
-}
+} 

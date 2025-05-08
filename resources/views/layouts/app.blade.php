@@ -7,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name') }}</title>
-    <meta name="description" content="DreamsTour - A premium Bootstrap 5 travel and tour booking template.">
-    <meta name="keywords" content="travel, booking, Bootstrap 5, DreamsTour, tour agency, hotel, flight, holiday">
-    <meta name="author" content="Dreams Technologies">
+    <title>{{ $company && $company->name ? $company->name : 'No Name' }}</title>
+    <meta name="description" content="{{ $company && $company->meta_description ? $company->meta_description : 'No Description' }}">
+    <meta name="keywords" content="{{ $company && $company->meta_title ? $company->meta_title : 'No Keywords' }}">
+    <meta name="author" content="{{ $company && $company->name ? $company->name : 'No Name' }}">
     <meta name="robots" content="index, follow">
 
     <!-- Favicon & Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/apple-touch-icon.png') }}">
-    <link rel="icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}">
+    <link rel="icon" href="{{ $company && $company->favicon ? asset($company->favicon) : asset('assets/default/tempLogo.png') }}" type="image/x-icon">
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
