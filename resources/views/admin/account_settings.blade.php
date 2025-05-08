@@ -50,12 +50,12 @@
                                             <div class="col-sm-6">
                                                 <label class="form-label">Meta Keywords</label>
                                                 <input type="text" name="meta_title" class="form-control"
-                                                    value="{{ $company->meta_title }}">
+                                                    value="{{ $company->meta_title ?? '' }}">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label class="form-label">Meta Description</label>
                                                 <input type="text" name="meta_description" class="form-control"
-                                                    value="{{ $company->meta_description }}">
+                                                    value="{{ $company->meta_description ?? '' }}">
                                             </div>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                                                         @endif
                                                     </label>
                                                     <input type="text" name="{{ $field }}" class="form-control"
-                                                        value="{{ $company->$field }}">
+                                                        value="{{ $company->$field ?? '' }}">
                                                 </div>
                                             @endforeach
                                         </div>

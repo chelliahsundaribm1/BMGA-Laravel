@@ -120,21 +120,21 @@
                                         <div class="col-lg-12">
                                             <label class="form-label">Address</label>
                                             <input type="text" name="address" class="form-control"
-                                                value="{{ $company->address }}">
+                                                value="{{ $company->address ?? '' }}">
                                         </div>
 
                                         <!-- Website -->
                                         <div class="col-lg-6">
                                             <label class="form-label">Website</label>
                                             <input type="text" name="website" class="form-control"
-                                                value="{{ $company->website }}">
+                                                value="{{ $company->website ?? '' }}">
                                         </div>
 
                                         <!-- Postal Code -->
                                         <div class="col-lg-6">
                                             <label class="form-label">Postal Code</label>
                                             <input type="text" name="postal_code" class="form-control"
-                                                value="{{ $company->postal_code }}">
+                                                value="{{ $company->postal_code ?? '' }}">
                                         </div>
                                     </div>
                                 </div>

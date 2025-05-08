@@ -2,7 +2,7 @@
         <div class="container">
             <div class="d-flex align-items-center justify-content-between flex-wrap">
                 <p class="d-flex align-items-center fw-medium fs-14 mb-2"><i class="isax isax-call5 me-2"></i>Call Us :
-                    {{ $company->phone }}</p>
+                    {{ $company->phone ?? ''}}</p>
                 <div class="d-flex align-items-center">
                     @if (!empty($company->email))
                         <p class="mb-2 me-3 d-flex align-items-center fw-medium fs-14">
