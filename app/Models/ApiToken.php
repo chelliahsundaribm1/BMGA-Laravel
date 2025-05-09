@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ApiToken extends Model
 {
     protected $fillable = [
-        'provider', 'access_token', 'refresh_token', 'expires_at',
+        'provider',
+        'access_token',
+        'refresh_token',
+        'expires_at',
     ];
 
     protected $casts = [

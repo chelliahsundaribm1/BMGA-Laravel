@@ -1456,6 +1456,15 @@
     </section>
     <!-- /Destination Section -->
 
+    @foreach ($airlines as $airline)
+                <tr>
+                    <td>{{ $airline->name }}</td>
+                    <td>
+                        <img src="{{ $airline && $airline->logo_url ? asset($airline->logo_url) : asset('assets/airlines_icons/00_nologo.png') }} logo" width="50" height="50">
+                        
+                    </td>
+                </tr>
+            @endforeach
     <!-- Benefit Section -->
     <section class="section benefit-section bg-light-300">
         <div class="container">
