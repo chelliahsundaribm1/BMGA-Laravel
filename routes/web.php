@@ -90,6 +90,22 @@ Route::middleware(['check.login.modal'])->group(function () {
     Route::view('/wishlist', 'wishlist')->name('wishlist');
     Route::view('/bookings', 'bookings')->name('bookings');
 
+    // // Flight Routes
+    // Route::prefix('flights')->name('flights.')->group(function () {
+    //     Route::get('/', [FlightsController::class, 'index'])->name('index');
+    //     Route::get('/search', [FlightsController::class, 'searchFlights'])->name('search');
+    //     Route::get('/rules', [FlightsController::class, 'getFareRules'])->name('rules');
+    //     Route::get('/itinerary', [FlightsController::class, 'createItinerary'])->name('itinerary.create');
+    //     Route::get('/itinerary/{itineraryCode}', [FlightsController::class, 'getItinerary'])->name('itinerary.get');
+    //     Route::get('/passengers/{itineraryCode}', [FlightsController::class, 'storePassengerCollection'])->name('passengers.store');
+    //     Route::get('/reprice/{itineraryCode}', [FlightsController::class, 'reprice'])->name('reprice');
+    //     Route::get('/book/{itineraryCode}', [FlightsController::class, 'bookFlight'])->name('book');
+    //     Route::get('/details/{bookingCode}', [FlightsController::class, 'getBookingDetails'])->name('details');
+    //     Route::get('/balance', [FlightsController::class, 'getWalletBalance'])->name('balance');
+    //     Route::get('/flight_details', [FlightsController::class, 'showFlightResults'])->name('flight_details');
+
+    // });
+});
     // Flight Routes
     Route::prefix('flights')->name('flights.')->group(function () {
         Route::get('/', [FlightsController::class, 'index'])->name('index');
@@ -105,8 +121,6 @@ Route::middleware(['check.login.modal'])->group(function () {
         Route::get('/flight_details', [FlightsController::class, 'showFlightResults'])->name('flight_details');
 
     });
-});
-
 /*
 |--------------------------------------------------------------------------
 | Admin Routes

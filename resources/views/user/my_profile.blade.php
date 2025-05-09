@@ -1,16 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-
- <!-- Breadcrumb -->
- <div class="breadcrumb-bar breadcrumb-bg-01 text-center">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar breadcrumb-bg-01 text-center">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-12">
                     <h2 class="breadcrumb-title mb-2">My Profile</h2>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item"><a href="index.html"><i class="isax isax-home5"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="isax isax-home5"></i></a></li>
                             <li class="breadcrumb-item active" aria-current="page">My Profile</li>
                         </ol>
                     </nav>
@@ -19,13 +18,16 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
+
+    <!-- Page Wrapper -->
     <div class="content">
         <div class="container">
 
             <div class="row">
 
-              <!-- Sidebar -->
-              @include('user.sidebar')
+                <!-- Sidebar -->
+                             @include('user.sidebar')
+
                 <!-- /Sidebar -->
 
                 <!-- My Profile -->
@@ -34,7 +36,9 @@
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h6>My Profile</h6>
                             <div class="d-flex align-items-center justify-content-center">
-                                <a href="profile-settings.html" class="p-1 rounded-circle btn btn-light d-flex align-items-center justify-content-center"><i class="isax isax-edit-2 fs-14"></i></a>
+                                <a href="profile-settings.html"
+                                    class="p-1 rounded-circle btn btn-light d-flex align-items-center justify-content-center"><i
+                                        class="isax isax-edit-2 fs-14"></i></a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -72,7 +76,9 @@
                                 <div class="col-md-6">
                                     <div class="mb-2">
                                         <h6 class="fs-14">Email</h6>
-                                        <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef8c879d8980dddcdad9af8a978e829f838ac18c8082">[email&#160;protected]</a></p>
+                                        <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                                                data-cfemail="ef8c879d8980dddcdad9af8a978e829f838ac18c8082">[email&#160;protected]</a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -123,5 +129,5 @@
             </div>
         </div>
     </div>
-    
+    <!-- /Page Wrapper -->
 @endsection

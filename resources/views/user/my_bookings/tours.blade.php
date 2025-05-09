@@ -2,15 +2,15 @@
 
 @section('content')
 
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar breadcrumb-bg-02 text-center">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar breadcrumb-bg-02 text-center">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-12">
                     <h2 class="breadcrumb-title mb-2">My Bookings</h2>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item"><a href="index-2.html"><i class="isax isax-grid-55"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="isax isax-grid-55"></i></a></li>
                             <li class="breadcrumb-item" aria-current="page">My Bookings</li>
                             <li class="breadcrumb-item active" aria-current="page">Tours</li>
                         </ol>
@@ -27,8 +27,9 @@
 
             <div class="row">
 
-              <!-- Sidebar -->
-              @include('user.sidebar')
+                <!-- Sidebar -->
+                      @include('user.sidebar')
+
                 <!-- /Sidebar -->
 
                 <!-- Hotel Booking -->
@@ -55,8 +56,7 @@
                                     </a>
                                     <ul class="dropdown-menu  dropdown-menu-end p-3">
                                         <li>
-                                            <a href="javascript:void(0);" class="dropdown-item rounded-1"><i
-													class="ti ti-file-type-pdf me-1"></i>Export as PDF</a>
+                                            <a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-pdf me-1"></i>Export as PDF</a>
                                         </li>
                                         <li>
                                             <a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-xls me-1"></i>Export as Excel</a>

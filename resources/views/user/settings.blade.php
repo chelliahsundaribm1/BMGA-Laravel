@@ -2,15 +2,15 @@
 
 @section('content')
 
- <!-- Breadcrumb -->
- <div class="breadcrumb-bar breadcrumb-bg-04 text-center">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar breadcrumb-bg-04 text-center">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-12">
                     <h2 class="breadcrumb-title mb-2">Settings</h2>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item"><a href="index.html"><i class="isax isax-grid-55"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="isax isax-grid-55"></i></a></li>
                             <li class="breadcrumb-item active" aria-current="page">Profile Settings</li>
                         </ol>
                     </nav>
@@ -27,7 +27,8 @@
             <div class="row">
 
                 <!-- Sidebar -->
-                @include('user.sidebar')
+                        @include('user.sidebar')
+
                 <!-- /Sidebar -->
 
                 <!-- Profile Settings -->
