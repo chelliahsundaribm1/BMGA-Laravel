@@ -12,6 +12,7 @@ class FlightsController extends Controller
     private function getTravclanToken()
     {
         return ApiToken::where('provider', 'travclan')->first()?->access_token;
+        
     }
 
     private function travclanHeaders($token): array
