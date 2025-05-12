@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Airlines;
-use App\Models\Airport;
 use App\Models\Locations;
 use Illuminate\Http\Request;
 
@@ -11,10 +10,9 @@ class HomeController extends Controller
 {
     public function index(){
 
-        $airports = Airport::all(); 
+        $locations = Locations::all(); 
         $airlines = Airlines::paginate(6);
-
-        return view('welcome', compact('airports', 'airlines'));
+        return view('welcome', compact('locations', 'airlines'));
     } 
     
     public function aboutus(){
@@ -25,13 +23,10 @@ class HomeController extends Controller
         return view('contact');
     }
 
-public function flight()
-{
-    $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
-
-    return view('flight', compact('airlines'));
-}
-
+    public function flight(){
+        return view('flight');
+    }
+    
     public function hotel(){
         return view('hotel');
     }

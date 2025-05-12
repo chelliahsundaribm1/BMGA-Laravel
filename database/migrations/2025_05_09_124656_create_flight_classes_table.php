@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('flight_classes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('baggage_info');
-            $table->decimal('extra_charge', 10, 2);
+            $table->text('baggage_info')->nullable();
+            $table->decimal('extra_charge', 10, 2)->nullable();
             $table->timestamps();
         });
     }

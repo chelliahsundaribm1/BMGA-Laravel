@@ -94,6 +94,7 @@
                                                                     <input type="text" class="form-control from-input" placeholder="Where are you flying from?">
                                                                     <p class="fs-12 mb-0 from-country">Country</p>
                                                                 </div>
+
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
@@ -125,20 +126,126 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="form-item">
+                                                            <!-- <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
                                                                 <input type="text" class="form-control datetimepicker" value="{{ date('d-m-Y') }}">
                                                                 <p class="fs-12 mb-0">{{ date('l') }}</p>
-                                                            </div>
-                                                            <div class="form-item round-drip">
+                                                            </div> -->
+                                                            
+<!--new date format-->
+                                                      <div class="form-item">
+    <label class="form-label fs-14 text-default mb-1">Departure</label>
+    <input 
+        type="text" 
+        class="form-control datetimepicker" 
+        id="departureDate"
+        name="departureDate"
+        value="{{ date('d-m-Y') }}"
+        placeholder="Select date"
+    >
+    <p class="fs-12 mb-0" id="departureDay">{{ date('l') }}</p>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    flatpickr("#departureDate", {
+        dateFormat: "d-m-Y",
+        minDate: "today",
+        defaultDate: "{{ date('d-m-Y') }}",
+        disable: [
+            function(date) {
+                // Disable all dates before today
+                return date < new Date().setHours(0, 0, 0, 0);
+            }
+        ],
+        onReady: function(selectedDates, dateStr, instance) {
+            // Remove past days from calendar UI
+            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+            pastDays.forEach(el => el.style.display = 'none');
+        },
+        onMonthChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onYearChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onChange: function(selectedDates) {
+            const options = { weekday: 'long' };
+            const day = selectedDates[0].toLocaleDateString('en-US', options);
+            document.getElementById('departureDay').textContent = day;
+        }
+    });
+</script>
+
+<!-- -->
+ 
+
+                                                            <!-- <div class="form-item round-drip">
                                                                 <label class="form-label fs-14 text-default mb-1">Return</label>
                                                                 <input type="text" class="form-control datetimepicker" value="{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}">
                                                                 <p class="fs-12 mb-0">{{ \Carbon\Carbon::tomorrow()->format('l') }}</p>
-                                                            </div>
+                                                            </div> -->
+                                                            <div class="form-item round-drip">
+    <label class="form-label fs-14 text-default mb-1">Return</label>
+    <input 
+        type="text" 
+        class="form-control datetimepicker" 
+        id="returnDate"
+        name="returnDate"
+        value="{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}"
+        placeholder="Select return date"
+    >
+    <p class="fs-12 mb-0" id="returnDay">{{ \Carbon\Carbon::tomorrow()->format('l') }}</p>
+</div>
+
+<script>
+    flatpickr("#returnDate", {
+        dateFormat: "d-m-Y",
+        minDate: "today",
+        defaultDate: "{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}",
+        disable: [
+            function(date) {
+                // Disable all dates before today
+                return date < new Date().setHours(0, 0, 0, 0);
+            }
+        ],
+        onReady: function(selectedDates, dateStr, instance) {
+            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+            pastDays.forEach(el => el.style.display = 'none');
+        },
+        onMonthChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onYearChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onChange: function(selectedDates) {
+            const options = { weekday: 'long' };
+            const day = selectedDates[0].toLocaleDateString('en-US', options);
+            document.getElementById('returnDay').textContent = day;
+        }
+    });
+</script>
+
+<!------------------------------------------------->
+
                                                             <div class="form-item dropdown">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">Travellers and cabin class</label>
-                                                                    <h5>4 <span class="fw-normal fs-14">Persons</span></h5>
+                                                                    <h5  id="total-travelers">4 11<span class="fw-normal fs-14">Persons</span></h5>
                                                                     <p class="fs-12 mb-0">1 Adult, Economy</p>
                                                                 </div>
                                                                 <div class="dropdown-menu dropdown-menu-end dropdown-xl">
@@ -152,13 +259,13 @@
                                                                                     <div class="custom-increment">
                                                                                         <div class="input-group">
                                                                                             <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
+                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="adults">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
                                                                                             </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01">
+                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="adults">
                                                                                             <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="adults">
                                                                                                     <span><i class="isax isax-add"></i></span>
                                                                                             </button>
                                                                                             </span>
@@ -172,13 +279,13 @@
                                                                                     <div class="custom-increment">
                                                                                         <div class="input-group">
                                                                                             <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
+                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="children">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
                                                                                             </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01">
+                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="children">
                                                                                             <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="children">
                                                                                                     <span><i class="isax isax-add"></i></span>
                                                                                             </button>
                                                                                             </span>
@@ -192,13 +299,13 @@
                                                                                     <div class="custom-increment">
                                                                                         <div class="input-group">
                                                                                             <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
+                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="infants">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
                                                                                             </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01">
+                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="infants">
                                                                                             <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="infants">
                                                                                                     <span><i class="isax isax-add"></i></span>
                                                                                             </button>
                                                                                             </span>
@@ -266,7 +373,29 @@
                                                                     <ul class="from-results-multi list-unstyled"></ul>
                                                                 </div>
                                                             </div>
+                 <!----logic of sum of total persons---->
+                 
+                 <script>
+  function updateTotal() {
+    const adults = parseInt(document.getElementById('adults').value) || 0;
+    const children = parseInt(document.getElementById('children').value) || 0;
+    const infants = parseInt(document.getElementById('infants').value) || 0;
 
+    const total = adults + children + infants;
+
+    document.getElementById('total-travelers').innerHTML = `${total}<span class="fw-normal fs-14">Persons</span>`;
+  }
+
+  // Attach input listeners to the input fields only
+  document.getElementById('adults').addEventListener('input', updateTotal);
+  document.getElementById('children').addEventListener('input', updateTotal);
+  document.getElementById('infants').addEventListener('input', updateTotal);
+
+  // Initial update
+  updateTotal();
+</script>
+
+<!------------------------------>
                                                          
                                                             <div class="form-item dropdown to-dropdown-multi ps-2 ps-sm-3">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -288,11 +417,58 @@
                                                                 </div>
                                                             </div>
                                                            
-                                                            <div class="form-item">
+                                                            <!-- <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
                                                                 <input type="text" class="form-control datetimepicker" value="21-10-2024">
                                                                 <p class="fs-12 mb-0">Monday</p>
-                                                            </div>
+                                                            </div> -->
+                                                            <div class="form-item">
+    <label class="form-label fs-14 text-default mb-1">Departure</label>
+    <input 
+        type="text" 
+        class="form-control datetimepicker" 
+        id="staticDepartureDate"
+        name="departureDate"
+        value="21-10-2024"
+        placeholder="Select departure date"
+    >
+    <p class="fs-12 mb-0" id="staticDepartureDay">Monday</p>
+</div>
+
+<script>
+    flatpickr("#staticDepartureDate", {
+        dateFormat: "d-m-Y",
+        minDate: "today",
+        defaultDate: "21-10-2024",
+        disable: [
+            function(date) {
+                return date < new Date().setHours(0, 0, 0, 0);
+            }
+        ],
+        onReady: function(selectedDates, dateStr, instance) {
+            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+            pastDays.forEach(el => el.style.display = 'none');
+        },
+        onMonthChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onYearChange: function(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
+                pastDays.forEach(el => el.style.display = 'none');
+            }, 10);
+        },
+        onChange: function(selectedDates) {
+            const options = { weekday: 'long' };
+            const day = selectedDates[0].toLocaleDateString('en-US', options);
+            document.getElementById('staticDepartureDay').textContent = day;
+        }
+    });
+</script>
+
                                                         </div>
                                                         <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                     </div>
