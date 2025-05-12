@@ -88,34 +88,28 @@
                                                 <div class="normal-trip">
                                                     <div class="d-lg-flex">
                                                         <div class="d-flex  form-info">
-                                                            <div class="form-item dropdown">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
+                                                            <div class="form-item dropdown from-dropdown">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                                                     <label class="form-label fs-14 text-default mb-1">From</label>
-                                                                    <input type="text" class="form-control" value="Newyork">
-                                                                    <p class="fs-12 mb-0">Ken International Airport</p>
+                                                                    <input type="text" class="form-control from-input" placeholder="Where are you flying from?">
+                                                                    <p class="fs-12 mb-0 from-country">Country</p>
                                                                 </div>
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control" placeholder="Search Location">
+                                                                            <input type="text" class="form-control from-search" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Newyork</h6>
-                                                                            </a>
-                                                                        </li>
-                                                                        
-                                                                    </ul>
+                                                                    <ul class="from-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-item dropdown ps-2 ps-sm-3">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
+
+                                                            <div class="form-item dropdown to-dropdown ps-2 ps-sm-3">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                                                     <label class="form-label fs-14 text-default mb-1">To</label>
-                                                                    <h5>Las Vegas</h5>
-                                                                    <p class="fs-12 mb-0">Martini International Airport</p>
+                                                                    <input type="text" class="form-control to-input" placeholder="Where are you flying to?">
+                                                                    <p class="fs-12 mb-0 to-country">Country</p>
                                                                     <span class="way-icon badge badge-primary rounded-pill translate-middle">
                                                                         <i class="fa-solid fa-arrow-right-arrow-left"></i>
                                                                     </span>
@@ -123,30 +117,23 @@
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control" placeholder="Search Location">
+                                                                            <input type="text" class="form-control to-search" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Newyork</h6>
-                                                                                <p>Ken International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                       
-                                                                    </ul>
+                                                                    <ul class="to-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
+
                                                             <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
-                                                                <input type="text" class="form-control datetimepicker" value="21-10-2024">
-                                                                <p class="fs-12 mb-0">Monday</p>
+                                                                <input type="text" class="form-control datetimepicker" value="{{ date('d-m-Y') }}">
+                                                                <p class="fs-12 mb-0">{{ date('l') }}</p>
                                                             </div>
                                                             <div class="form-item round-drip">
                                                                 <label class="form-label fs-14 text-default mb-1">Return</label>
-                                                                <input type="text" class="form-control datetimepicker" value="23-10-2024">
-                                                                <p class="fs-12 mb-0">Wednesday</p>
+                                                                <input type="text" class="form-control datetimepicker" value="{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}">
+                                                                <p class="fs-12 mb-0">{{ \Carbon\Carbon::tomorrow()->format('l') }}</p>
                                                             </div>
                                                             <div class="form-item dropdown">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
@@ -263,58 +250,29 @@
                                                 <div class="multi-trip">
                                                     <div class="d-lg-flex">
                                                         <div class="d-flex  form-info">
-                                                            <div class="form-item dropdown">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
+                                                            <div class="form-item dropdown from-dropdown-multi">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                                                     <label class="form-label fs-14 text-default mb-1">From</label>
-                                                                    <input type="text" class="form-control" value="Newyork">
-                                                                    <p class="fs-12 mb-0">Ken International Airport</p>
+                                                                    <input type="text" class="form-control from-input-multi" value="" placeholder="Where are you flying from?">
+                                                                    <p class="fs-12 mb-0 from-country-multi">Country</p>
                                                                 </div>
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control" placeholder="Search Location">
+                                                                            <input type="text" class="form-control from-search-multi" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Newyork</h6>
-                                                                                <p>Ken International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Boston</h6>
-                                                                                <p>Boston Logan International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Northern Virginia</h6>
-                                                                                <p>Dulles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Los Angeles</h6>
-                                                                                <p>Los Angeles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Orlando</h6>
-                                                                                <p>Orlando International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
+                                                                    <ul class="from-results-multi list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-item dropdown ps-2 ps-sm-3">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
+
+                                                         
+                                                            <div class="form-item dropdown to-dropdown-multi ps-2 ps-sm-3">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                                                     <label class="form-label fs-14 text-default mb-1">To</label>
-                                                                    <h5>Las Vegas</h5>
-                                                                    <p class="fs-12 mb-0">Martini International Airport</p>
+                                                                    <input type="text" class="form-control to-input-multi" value="" placeholder="Where are you flying to?">
+                                                                    <p class="fs-12 mb-0 to-country-multi">Country</p>
                                                                     <span class="way-icon badge badge-primary rounded-pill translate-middle">
                                                                         <i class="fa-solid fa-arrow-right-arrow-left"></i>
                                                                     </span>
@@ -322,44 +280,14 @@
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control" placeholder="Search Location">
+                                                                            <input type="text" class="form-control to-search-multi" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Newyork</h6>
-                                                                                <p>Ken International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Boston</h6>
-                                                                                <p>Boston Logan International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Northern Virginia</h6>
-                                                                                <p>Dulles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li class="border-bottom">
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Los Angeles</h6>
-                                                                                <p>Los Angeles International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <h6 class="fs-16 fw-medium">Orlando</h6>
-                                                                                <p>Orlando International Airport</p>
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
+                                                                    <ul class="to-results-multi list-unstyled"></ul>
                                                                 </div>
                                                             </div>
+                                                           
                                                             <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
                                                                 <input type="text" class="form-control datetimepicker" value="21-10-2024">
@@ -1455,7 +1383,6 @@
         </div>
     </section>
     <!-- /Destination Section -->
-
 
     <!-- Benefit Section -->
     <section class="section benefit-section bg-light-300">
@@ -3678,5 +3605,211 @@
     </section>
     <!-- /Support Section -->
 
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Debounce function to limit API calls
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        function setupAirportSearch(type) {
+            const dropdown = $(`.${type}-dropdown`);
+            const searchInput = $(`.${type}-search`);
+            const resultList = $(`.${type}-results`);
+            const displayInput = $(`.${type}-input`);
+            const countryDisplay = $(`.${type}-country`);
+
+            const searchAirports = debounce(function(query) {
+                if (query.length < 2) {
+                    resultList.empty();
+                    return;
+                }
+
+                $.ajax({
+                    url: "/flights/airports/search",
+                    method: "GET",
+                    data: { q: query },
+                    success: function(data) {
+                        displayResults(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching airport data:", error);
+                        resultList.html('<li class="border-bottom px-3 py-2 text-muted">Error loading results</li>');
+                    }
+                });
+            }, 300);
+
+            function displayResults(data) {
+                resultList.empty();
+
+                if (!data || data.length === 0) {
+                    resultList.append('<li class="border-bottom px-3 py-2 text-muted">No results found</li>');
+                    return;
+                }
+
+                data.forEach(function(airport) {
+                    const listItem = $(`
+                        <li class="border-bottom">
+                            <a class="dropdown-item airport-option d-block px-3 py-2" href="javascript:void(0);" 
+                            data-label="${airport.airport_name} (${airport.airport_code})"
+                            data-country="${airport.country_name}">
+                                <h6 class="fs-16 fw-medium mb-0">${airport.airport_name} (${airport.airport_code})</h6>
+                                <p class="mb-0 text-muted">${airport.city_name}, ${airport.country_name}</p>
+                            </a>
+                        </li>
+                    `);
+                    resultList.append(listItem);
+                });
+            }
+
+            searchInput.on('input', function() {
+                searchAirports($(this).val());
+            });
+
+            // Handle option selection
+            resultList.on('click', '.airport-option', function() {
+                const label = $(this).data('label');
+                const country = $(this).data('country');
+
+                displayInput.val(label);
+                countryDisplay.text(country);
+                
+                // Close the dropdown
+                dropdown.find('.dropdown-menu').removeClass('show');
+            });
+
+            // Initialize display values
+            displayInput.val('');
+            countryDisplay.text('Country');
+        }
+
+        // Initialize for both inputs
+        setupAirportSearch('from');
+        setupAirportSearch('to');
+
+        // Swap functionality
+        $('.way-icon').click(function() {
+            const fromInput = $('.from-input').val();
+            const fromCountry = $('.from-country').text();
+            const toInput = $('.to-input').val();
+            const toCountry = $('.to-country').text();
+            
+            $('.from-input').val(toInput);
+            $('.from-country').text(toCountry);
+            $('.to-input').val(fromInput);
+            $('.to-country').text(fromCountry);
+        });
+    });
+    
+
+$(document).ready(function() {
+    // Initialize for multi-trip
+    setupAirportSearchMulti('from');
+    setupAirportSearchMulti('to');
+
+    function setupAirportSearchMulti(type) {
+        const dropdown = $(`.${type}-dropdown-multi`);
+        const searchInput = $(`.${type}-search-multi`);
+        const resultList = $(`.${type}-results-multi`);
+        const displayInput = $(`.${type}-input-multi`);
+        const countryDisplay = $(`.${type}-country-multi`);
+
+        // Debounce function to limit API calls
+        const searchAirports = debounce(function(query) {
+            if (query.length < 2) {
+                resultList.empty();
+                return;
+            }
+
+            $.ajax({
+                url: "/flights/airports/search",
+                method: "GET",
+                data: { q: query },
+                success: function(data) {
+                    displayResults(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching airport data:", error);
+                    resultList.html('<li class="border-bottom px-3 py-2 text-muted">Error loading results</li>');
+                }
+            });
+        }, 300);
+
+        function displayResults(data) {
+            resultList.empty();
+
+            if (!data || data.length === 0) {
+                resultList.append('<li class="border-bottom px-3 py-2 text-muted">No results found</li>');
+                return;
+            }
+
+            data.forEach(function(airport) {
+                const listItem = $(`
+                    <li class="border-bottom">
+                        <a class="dropdown-item airport-option d-block px-3 py-2" href="javascript:void(0);" 
+                        data-label="${airport.airport_name}"
+                        data-country="${airport.airport_name} Airport">
+                            <h6 class="fs-16 fw-medium mb-0">${airport.airport_name}</h6>
+                            <p class="mb-0 text-muted">${airport.airport_name} Airport</p>
+                        </a>
+                    </li>
+                `);
+                resultList.append(listItem);
+            });
+        }
+
+        searchInput.on('input', function() {
+            searchAirports($(this).val());
+        });
+
+        // Handle option selection
+        resultList.on('click', '.airport-option', function() {
+            const label = $(this).data('label');
+            const country = $(this).data('country');
+
+            displayInput.val(label);
+            countryDisplay.text(country);
+            
+            // Close the dropdown
+            dropdown.find('.dropdown-menu').removeClass('show');
+        });
+
+        // Swap functionality for multi-trip
+        $(`.${type}-dropdown-multi .way-icon`).click(function() {
+            const fromInput = $('.from-input-multi').val();
+            const fromCountry = $('.from-country-multi').text();
+            const toInput = $('.to-input-multi').val();
+            const toCountry = $('.to-country-multi').text();
+            
+            $('.from-input-multi').val(toInput);
+            $('.from-country-multi').text(toCountry);
+            $('.to-input-multi').val(fromInput);
+            $('.to-country-multi').text(fromCountry);
+        });
+    }
+
+    // Shared debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+});
+</script>
 
 @endsection

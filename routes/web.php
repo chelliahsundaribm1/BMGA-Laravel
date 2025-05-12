@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Flights\AirportController;
 use App\Http\Controllers\FlightsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -119,6 +120,8 @@ Route::middleware(['check.login.modal'])->group(function () {
         Route::get('/details/{bookingCode}', [FlightsController::class, 'getBookingDetails'])->name('details');
         Route::get('/balance', [FlightsController::class, 'getWalletBalance'])->name('balance');
         Route::get('/flight_details', [FlightsController::class, 'showFlightResults'])->name('flight_details');
+
+        Route::get('/airports/search', [AirportController::class, 'searchAirports'])->name('airports.search');
 
     });
 /*
