@@ -394,79 +394,27 @@
             <!-- /Flight Search -->
 
             <!-- Flight Types -->
-            <div class="mb-2">
-                <div class="mb-3">
-                    <h5 class="mb-2">Choose type of Flights you are interested</h5>
-                </div>
-                <div class="row">
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-01.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">American Airline</a></h6>
-                                <p class="fs-14">216 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-02.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Delta Airlines</a></h6>
-                                <p class="fs-14">569 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-03.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Emirates</a></h6>
-                                <p class="fs-14">129 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-04.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Air France</a></h6>
-                                <p class="fs-14">600 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-05.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Qatar Airways</a></h6>
-                                <p class="fs-14">200 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-06.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Air India</a></h6>
-                                <p class="fs-14">180 Flights</p>
-                            </div>
-                        </div>
+       <div class="mb-2">
+    <div class="mb-3">
+        <h5 class="mb-2">Choose type of Flights you are interested in</h5>
+    </div>
+    <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; ms-overflow-style: none;">
+        @foreach ($airlines as $airline)
+            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6" style="flex: 0 0 auto;">
+                <div class="d-flex align-items-center hotel-type-item mb-3">
+                    <a href="flight-grid.html" class="avatar avatar-lg">
+                        <img src="{{ asset('assets/airlines_icons/' . $airline->logo_url) }}" class="rounded-circle" alt="{{ $airline->name }}">
+                    </a>
+                    <div class="ms-2">
+                        <h6 class="fs-16 fw-medium"><a href="flight-grid.html">{{ $airline->name }}</a></h6>
+                        <p class="fs-14">{{ $airline->flights_count }}</p>
                     </div>
                 </div>
             </div>
+        @endforeach
+    </div>
+</div>
+
             <!-- /Flight Types -->
 
             <div class="row">

@@ -25,15 +25,15 @@ class DatabaseSeeder extends Seeder
         // $this->call([
         //     LocationSeeder::class,
         // ]);
-        // $this->call([
-        //     CountrySeeder::class,
-        // ]);
-        // $this->call([
-        //     StateSeeder::class,
-        // ]);
-        // $this->call([
-        //     CitySeeder::class,
-        // ]);
+        $this->call([
+            CountrySeeder::class,
+        ]);
+        $this->call([
+            StateSeeder::class,
+        ]);
+        $this->call([
+            CitySeeder::class,
+        ]);
         $this->call([
             AirlineSeeder::class,
         ]);

@@ -23,10 +23,13 @@ class HomeController extends Controller
         return view('contact');
     }
 
-    public function flight(){
-        return view('flight');
-    }
-    
+public function flight()
+{
+    $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+
+    return view('flight', compact('airlines'));
+}
+
     public function hotel(){
         return view('hotel');
     }
