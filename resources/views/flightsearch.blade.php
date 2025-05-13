@@ -1,4 +1,4 @@
-@extends('layouts.user.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -26,6 +26,18 @@
     <div class="content">
         <div class="container">
 
+@if(!empty($flights))
+    <!-- Display flight results -->
+    @foreach($flights['results'] as $flight)
+        <!-- Flight display logic -->
+    @endforeach
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        {{ $errors->first() }}
+    </div>
+@endif
             <!-- Flight Search -->
             <div class="card">
                 <div class="card-body">
@@ -178,7 +190,7 @@
                                                         <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label text-gray-9 mb-2">Adults <span class="text-default fw-normal">( 12+ Yrs )</span></label>
-                                                                <div class="custom-increment">
+                                                                <div class="custom-increments">
                                                                     <div class="input-group">
                                                                         <span class="input-group-btn float-start">
                                                                             <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
@@ -198,7 +210,7 @@
                                                         <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label text-gray-9 mb-2">Childrens <span class="text-default fw-normal">( 2-12 Yrs )</span></label>
-                                                                <div class="custom-increment">
+                                                                <div class="custom-increments">
                                                                     <div class="input-group">
                                                                         <span class="input-group-btn float-start">
                                                                             <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
@@ -218,7 +230,7 @@
                                                         <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label text-gray-9 mb-2">Infants<span class="text-default fw-normal">( 0-12 Yrs )</span></label>
-                                                                <div class="custom-increment">
+                                                                <div class="custom-increments">
                                                                     <div class="input-group">
                                                                         <span class="input-group-btn float-start">
                                                                             <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">

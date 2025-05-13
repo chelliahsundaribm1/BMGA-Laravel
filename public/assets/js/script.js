@@ -561,11 +561,11 @@ Template Name: DreamsTour - Bootstrap Template
   // Fligt Check
   $(".banner-form .form-check-input").on("change", function (e) {
     var radioval = $(this).val();
-    if (radioval === "roundtrip") {
+    if (radioval === "2") {
       $(".round-drip").show();
       $(".multi-trip").hide();
       $(".normal-trip").show();
-    } else if (radioval === "multiway") {
+    } else if (radioval === "3") {
       $(".round-drip").hide();
       $(".multi-trip").show();
       $(".normal-trip").hide();
@@ -685,7 +685,7 @@ Template Name: DreamsTour - Bootstrap Template
   //Increment Decrement Numberes
   $(".quantity-right-plus").on("click", function (e) {
     e.preventDefault();
-    var input = $(this).closest(".custom-increment").find(".input-number");
+    var input = $(this).closest(".custom-increments").find(".input-number");
     var quantity = parseInt(input.val());
     // Increment the quantity
     input.val(quantity + 1);
@@ -693,7 +693,7 @@ Template Name: DreamsTour - Bootstrap Template
 
   $(".quantity-left-minus").on("click", function (e) {   
      e.preventDefault();
-    var input = $(this).closest(".custom-increment").find(".input-number");
+    var input = $(this).closest(".custom-increments").find(".input-number");
     var quantity = parseInt(input.val());
     // Decrement the quantity, but not below 0
     if (quantity > 0) {

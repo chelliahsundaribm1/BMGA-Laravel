@@ -11126,14 +11126,14 @@ footer.footer-three .footer-bottom .policy-links li a:hover {
   display: none;
 }
 
-.custom-increment .input-group .input-number {
+.custom-increments .input-group .input-number {
   border: 0;
   width: 50px;
   text-align: center;
   color: #111827;
   font-size: 14px;
 }
-.custom-increment .input-group .btn-number {
+.custom-increments .input-group .btn-number {
   width: 32px;
   height: 32px;
   -webkit-box-align: center;
@@ -11146,7 +11146,7 @@ footer.footer-three .footer-bottom .policy-links li a:hover {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
 }
-.custom-increment .input-group .btn-number:hover {
+.custom-increments .input-group .btn-number:hover {
   background: #CF3425;
   color: #FFF;
 }

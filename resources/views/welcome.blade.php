@@ -61,23 +61,34 @@
                                 <div>
                                     <div class="tab-content">
                                         <div class="tab-pane fade active show" id="flight">
+                                        @if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                                             <form action="{{ route('flights.search') }}" method="GET" class="flight-form" id="flight-form" data-url="{{ route('flights.search') }}">
-                                                <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
+                                                <input type="hidden" name="directFlight" value="true">
+
+                                               <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
                                                     <div class="d-flex align-items-center flex-wrap">
                                                         <div class="form-check d-flex align-items-center me-3 mb-2">
-                                                            <input class="form-check-input mt-0" type="radio" name="Radio" id="oneway" value="oneway" checked="">
+                                                            <input class="form-check-input mt-0" type="radio" name="journeyType" id="oneway" value="1" checked="">
                                                             <label class="form-check-label fs-14 ms-2" for="oneway">
                                                                 Oneway
                                                             </label>
                                                         </div>
                                                         <div class="form-check d-flex align-items-center me-3 mb-2">
-                                                            <input class="form-check-input mt-0" type="radio" name="Radio" id="roundtrip" value="roundtrip">
+                                                            <input class="form-check-input mt-0" type="radio" name="journeyType" id="roundtrip" value="2">
                                                             <label class="form-check-label fs-14 ms-2" for="roundtrip">
                                                                 Round Trip
                                                             </label>
                                                         </div>
                                                         <div class="form-check d-flex align-items-center me-3 mb-2">
-                                                            <input class="form-check-input mt-0" type="radio" name="Radio" id="multiway" value="multiway">
+                                                            <input class="form-check-input mt-0" type="radio" name="journeyType" id="multiway" value="3">
                                                             <label class="form-check-label fs-14 ms-2" for="multiway">
                                                                 Multi Trip
                                                             </label>
@@ -88,13 +99,13 @@
                                                 <div class="normal-trip">
                                                     <div class="d-lg-flex">
                                                         <div class="d-flex  form-info">
-                                                            <div class="form-item dropdown from-dropdown">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                            <!-- From Airport Dropdown -->
+                                                            <div class="form-item dropdown">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">From</label>
-                                                                    <input type="text" class="form-control from-input" placeholder="Where are you flying from?">
-                                                                    <p class="fs-12 mb-0 from-country">Country</p>
+                                                                    <input type="text" class="form-control from-input" placeholder="Where are you flying from?" readonly>
+                                                                    <p class="fs-12 mb-0 from-country">Select departure airport</p>
                                                                 </div>
-
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
@@ -105,12 +116,12 @@
                                                                     <ul class="from-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-
-                                                            <div class="form-item dropdown to-dropdown ps-2 ps-sm-3">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                            <!-- To Airport Dropdown -->
+                                                            <div class="form-item dropdown ps-2 ps-sm-3">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">To</label>
-                                                                    <input type="text" class="form-control to-input" placeholder="Where are you flying to?">
-                                                                    <p class="fs-12 mb-0 to-country">Country</p>
+                                                                    <input type="text" class="form-control to-input" placeholder="Where are you flying to?" readonly>
+                                                                    <p class="fs-12 mb-0 to-country">Select destination airport</p>
                                                                     <span class="way-icon badge badge-primary rounded-pill translate-middle">
                                                                         <i class="fa-solid fa-arrow-right-arrow-left"></i>
                                                                     </span>
@@ -125,283 +136,129 @@
                                                                     <ul class="to-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-
-                                                            <!-- <div class="form-item">
+                                                            <input type="hidden" name="origin" class="from-code">
+                                                            <input type="hidden" name="destination" class="to-code">
+                                                            <!-- Departure and return dates -->
+                                                           <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
-                                                                <input type="text" class="form-control datetimepicker" value="{{ date('d-m-Y') }}">
-                                                                <p class="fs-12 mb-0">{{ date('l') }}</p>
-                                                            </div> -->
-                                                            
-<!--new date format-->
-                                                      <div class="form-item">
-    <label class="form-label fs-14 text-default mb-1">Departure</label>
-    <input 
-        type="text" 
-        class="form-control datetimepicker" 
-        id="departureDate"
-        name="departureDate"
-        value="{{ date('d-m-Y') }}"
-        placeholder="Select date"
-    >
-    <p class="fs-12 mb-0" id="departureDay">{{ date('l') }}</p>
-</div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<script>
-    flatpickr("#departureDate", {
-        dateFormat: "d-m-Y",
-        minDate: "today",
-        defaultDate: "{{ date('d-m-Y') }}",
-        disable: [
-            function(date) {
-                // Disable all dates before today
-                return date < new Date().setHours(0, 0, 0, 0);
-            }
-        ],
-        onReady: function(selectedDates, dateStr, instance) {
-            // Remove past days from calendar UI
-            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-            pastDays.forEach(el => el.style.display = 'none');
-        },
-        onMonthChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onYearChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onChange: function(selectedDates) {
-            const options = { weekday: 'long' };
-            const day = selectedDates[0].toLocaleDateString('en-US', options);
-            document.getElementById('departureDay').textContent = day;
-        }
-    });
-</script>
-
-<!-- -->
- 
-
-                                                            <!-- <div class="form-item round-drip">
-                                                                <label class="form-label fs-14 text-default mb-1">Return</label>
-                                                                <input type="text" class="form-control datetimepicker" value="{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}">
-                                                                <p class="fs-12 mb-0">{{ \Carbon\Carbon::tomorrow()->format('l') }}</p>
-                                                            </div> -->
+                                                                <input type="text" class="form-control datetimepicker" name="preferredDepartureTime" value="{{ date('d-m-Y') }}">
+                                                                <p class="fs-12 mb-0">Monday</p>
+                                                            </div>
                                                             <div class="form-item round-drip">
-    <label class="form-label fs-14 text-default mb-1">Return</label>
-    <input 
-        type="text" 
-        class="form-control datetimepicker" 
-        id="returnDate"
-        name="returnDate"
-        value="{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}"
-        placeholder="Select return date"
-    >
-    <p class="fs-12 mb-0" id="returnDay">{{ \Carbon\Carbon::tomorrow()->format('l') }}</p>
-</div>
+                                                                <label class="form-label fs-14 text-default mb-1">Return</label>
+                                                                <input type="text" class="form-control datetimepicker" name="preferredReturnDepartureTime" value="{{ date('d-m-Y') }}">
+                                                                <p class="fs-12 mb-0">Wednesday</p>
+                                                            </div>
 
-<script>
-    flatpickr("#returnDate", {
-        dateFormat: "d-m-Y",
-        minDate: "today",
-        defaultDate: "{{ \Carbon\Carbon::tomorrow()->format('d-m-Y') }}",
-        disable: [
-            function(date) {
-                // Disable all dates before today
-                return date < new Date().setHours(0, 0, 0, 0);
-            }
-        ],
-        onReady: function(selectedDates, dateStr, instance) {
-            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-            pastDays.forEach(el => el.style.display = 'none');
-        },
-        onMonthChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onYearChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onChange: function(selectedDates) {
-            const options = { weekday: 'long' };
-            const day = selectedDates[0].toLocaleDateString('en-US', options);
-            document.getElementById('returnDay').textContent = day;
-        }
-    });
-</script>
-
-<!------------------------------------------------->
-
-                                                            <div class="form-item dropdown">
+                                                            <!-- Travellers and cabin class Dropdown -->
+                                                           <div class="form-item dropdown travellers-dropdown">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">Travellers and cabin class</label>
-                                                                    <h5  id="total-travelers">4 11<span class="fw-normal fs-14">Persons</span></h5>
-                                                                    <p class="fs-12 mb-0">1 Adult, Economy</p>
+                                                                    <h5 id="total-travelers" class="traveller-summary">1 <span class="fw-normal fs-14">Person</span></h5>
+                                                                    <p id="traveler-summary" class="fs-12 mb-0 traveller-breakdown">1 Adult, Economy</p>
                                                                 </div>
                                                                 <div class="dropdown-menu dropdown-menu-end dropdown-xl">
-                                                                    <h5 class="mb-3">Select Travelers &  Class</h5>
+                                                                    <h5 class="mb-3">Select Travelers & Class</h5>
                                                                     <div class="mb-3 border br-10 info-item pb-1">
                                                                         <h6 class="fs-16 fw-medium mb-2">Travellers</h6>
                                                                         <div class="row">
                                                                             <div class="col-md-4">
                                                                                 <div class="mb-3">
-                                                                                    <label class="form-label text-gray-9 mb-2">Adults <span class="text-default fw-normal">( 12+ Yrs )</span></label>
-                                                                                    <div class="custom-increment">
+                                                                                    <label class="form-label text-gray-9 mb-2">Adults <span class="text-default fw-normal">(12+ Yrs)</span></label>
+                                                                                    <div class="custom-increments">
                                                                                         <div class="input-group">
-                                                                                            <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="adults">
+                                                                                            <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="adult">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
-                                                                                            </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="adults">
-                                                                                            <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="adults">
-                                                                                                    <span><i class="isax isax-add"></i></span>
+                                                                                            <input type="text" name="adultCount" class="input-number adult-count" value="1" min="1" max="9">
+                                                                                            <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="adult">
+                                                                                                <span><i class="isax isax-add"></i></span>
                                                                                             </button>
-                                                                                            </span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-md-4">
                                                                                 <div class="mb-3">
-                                                                                    <label class="form-label text-gray-9 mb-2">Childrens <span class="text-default fw-normal">( 2-12 Yrs )</span></label>
-                                                                                    <div class="custom-increment">
+                                                                                    <label class="form-label text-gray-9 mb-2">Children <span class="text-default fw-normal">(2-12 Yrs)</span></label>
+                                                                                    <div class="custom-increments">
                                                                                         <div class="input-group">
-                                                                                            <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="children">
+                                                                                            <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="child">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
-                                                                                            </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="children">
-                                                                                            <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="children">
-                                                                                                    <span><i class="isax isax-add"></i></span>
+                                                                                            <input type="text" name="childCount" class="input-number child-count" value="0" min="0" max="8">
+                                                                                            <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="child">
+                                                                                                <span><i class="isax isax-add"></i></span>
                                                                                             </button>
-                                                                                            </span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-md-4">
                                                                                 <div class="mb-3">
-                                                                                    <label class="form-label text-gray-9 mb-2">Infants<span class="text-default fw-normal">( 0-12 Yrs )</span></label>
-                                                                                    <div class="custom-increment">
+                                                                                    <label class="form-label text-gray-9 mb-2">Infants <span class="text-default fw-normal">(0-2 Yrs)</span></label>
+                                                                                    <div class="custom-increments">
                                                                                         <div class="input-group">
-                                                                                            <span class="input-group-btn float-start">
-                                                                                                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="infants">
+                                                                                            <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="infant">
                                                                                                 <span><i class="isax isax-minus"></i></span>
                                                                                             </button>
-                                                                                            </span>
-                                                                                            <input type="text" name="quantity" class=" input-number" value="01" id="infants">
-                                                                                            <span class="input-group-btn float-end">
-                                                                                                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="infants">
-                                                                                                    <span><i class="isax isax-add"></i></span>
+                                                                                            <input type="text" name="infantCount" class="input-number infant-count" value="0" min="0" max="4">
+                                                                                            <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="infant">
+                                                                                                <span><i class="isax isax-add"></i></span>
                                                                                             </button>
-                                                                                            </span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    
                                                                     <div class="mb-3 border br-10 info-item pb-1">
-                                                                        <h6 class="fs-16 fw-medium mb-2">Travellers</h6>
+                                                                        <h6 class="fs-16 fw-medium mb-2">Cabin Class</h6>
                                                                         <div class="d-flex align-items-center flex-wrap">
-                                                                            <div class="form-check me-3 mb-3">
-                                                                                <input class="form-check-input" type="radio" value="Economy" name="cabin-class" id="economy" checked="">
-                                                                                <label class="form-check-label" for="economy">
-                                                                                    Economy
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="form-check me-3 mb-3">
-                                                                                <input class="form-check-input" type="radio" value="Economy" name="cabin-class" id="premium-economy">
-                                                                                <label class="form-check-label" for="premium-economy">
-                                                                                    Premium Economy
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="form-check me-3 mb-3">
-                                                                                <input class="form-check-input" type="radio" value="Business" name="cabin-class" id="business">
-                                                                                <label class="form-check-label" for="business">
-                                                                                    Business
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="form-check mb-3">
-                                                                                <input class="form-check-input" type="radio" value="First Class" name="cabin-class" id="first-class">
-                                                                                <label class="form-check-label" for="first-class">
-                                                                                    First Class
-                                                                                </label>
-                                                                            </div>
+                                                                            @forelse($flightclass as $class)
+                                                                                <div class="form-check me-3 mb-3">
+                                                                                    <input class="form-check-inputs cabin-class-radio" type="radio" name="flightCabinClass" id="{{ Str::slug($class->name) }}" value="{{ $class->id }}"{{ $loop->first ? 'checked' : '' }}>
+                                                                                    <label class="form-check-label" for="{{ Str::slug($class->name) }}">
+                                                                                        {{ $class->name }}
+                                                                                    </label>
+                                                                                </div>
+                                                                            @empty
+                                                                                <p class="text-muted">No cabin classes available.</p>
+                                                                            @endforelse
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="d-flex justify-content-end">
-                                                                        <a href="javascript:void(0);" class="btn btn-light btn-sm me-2">Cancel</a>
-                                                                        <button type="submit" class="btn btn-primary btn-sm">Apply</button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div>                                                                    
                                                         </div>
                                                         <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                     </div>
                                                 </div>
+        
                                                 <div class="multi-trip">
                                                     <div class="d-lg-flex">
                                                         <div class="d-flex  form-info">
-                                                            <div class="form-item dropdown from-dropdown-multi">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                            <div class="form-item dropdown">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">From</label>
-                                                                    <input type="text" class="form-control from-input-multi" value="" placeholder="Where are you flying from?">
-                                                                    <p class="fs-12 mb-0 from-country-multi">Country</p>
+                                                                    <input type="text" class="form-control from-input" placeholder="Where are you flying from?" readonly>
+                                                                    <p class="fs-12 mb-0 from-country">Select departure airport</p>
                                                                 </div>
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control from-search-multi" placeholder="Search Location">
+                                                                            <input type="text" class="form-control from-search" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul class="from-results-multi list-unstyled"></ul>
+                                                                    <ul class="from-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-                 <!----logic of sum of total persons---->
-                 
-                 <script>
-  function updateTotal() {
-    const adults = parseInt(document.getElementById('adults').value) || 0;
-    const children = parseInt(document.getElementById('children').value) || 0;
-    const infants = parseInt(document.getElementById('infants').value) || 0;
-
-    const total = adults + children + infants;
-
-    document.getElementById('total-travelers').innerHTML = `${total}<span class="fw-normal fs-14">Persons</span>`;
-  }
-
-  // Attach input listeners to the input fields only
-  document.getElementById('adults').addEventListener('input', updateTotal);
-  document.getElementById('children').addEventListener('input', updateTotal);
-  document.getElementById('infants').addEventListener('input', updateTotal);
-
-  // Initial update
-  updateTotal();
-</script>
-
-<!------------------------------>
-                                                         
-                                                            <div class="form-item dropdown to-dropdown-multi ps-2 ps-sm-3">
-                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                            <div class="form-item dropdown ps-2 ps-sm-3">
+                                                                <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
                                                                     <label class="form-label fs-14 text-default mb-1">To</label>
-                                                                    <input type="text" class="form-control to-input-multi" value="" placeholder="Where are you flying to?">
-                                                                    <p class="fs-12 mb-0 to-country-multi">Country</p>
+                                                                    <input type="text" class="form-control to-input" placeholder="Where are you flying to?" readonly>
+                                                                    <p class="fs-12 mb-0 to-country">Select destination airport</p>
                                                                     <span class="way-icon badge badge-primary rounded-pill translate-middle">
                                                                         <i class="fa-solid fa-arrow-right-arrow-left"></i>
                                                                     </span>
@@ -409,66 +266,18 @@
                                                                 <div class="dropdown-menu dropdown-md p-0">
                                                                     <div class="input-search p-3 border-bottom">
                                                                         <div class="input-group">
-                                                                            <input type="text" class="form-control to-search-multi" placeholder="Search Location">
+                                                                            <input type="text" class="form-control to-search" placeholder="Search Location">
                                                                             <span class="input-group-text px-2 border-start-0"><i class="isax isax-search-normal"></i></span>
                                                                         </div>
                                                                     </div>
-                                                                    <ul class="to-results-multi list-unstyled"></ul>
+                                                                    <ul class="to-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-                                                           
-                                                            <!-- <div class="form-item">
+                                                             <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
-                                                                <input type="text" class="form-control datetimepicker" value="21-10-2024">
+                                                                <input type="text" class="form-control datetimepicker" name="multipreferredDeparture" value="21-10-2024">
                                                                 <p class="fs-12 mb-0">Monday</p>
-                                                            </div> -->
-                                                            <div class="form-item">
-    <label class="form-label fs-14 text-default mb-1">Departure</label>
-    <input 
-        type="text" 
-        class="form-control datetimepicker" 
-        id="staticDepartureDate"
-        name="departureDate"
-        value="21-10-2024"
-        placeholder="Select departure date"
-    >
-    <p class="fs-12 mb-0" id="staticDepartureDay">Monday</p>
-</div>
-
-<script>
-    flatpickr("#staticDepartureDate", {
-        dateFormat: "d-m-Y",
-        minDate: "today",
-        defaultDate: "21-10-2024",
-        disable: [
-            function(date) {
-                return date < new Date().setHours(0, 0, 0, 0);
-            }
-        ],
-        onReady: function(selectedDates, dateStr, instance) {
-            const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-            pastDays.forEach(el => el.style.display = 'none');
-        },
-        onMonthChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onYearChange: function(selectedDates, dateStr, instance) {
-            setTimeout(() => {
-                const pastDays = instance.calendarContainer.querySelectorAll(".flatpickr-day.disabled");
-                pastDays.forEach(el => el.style.display = 'none');
-            }, 10);
-        },
-        onChange: function(selectedDates) {
-            const options = { weekday: 'long' };
-            const day = selectedDates[0].toLocaleDateString('en-US', options);
-            document.getElementById('staticDepartureDay').textContent = day;
-        }
-    });
-</script>
-
+                                                            </div>
                                                         </div>
                                                         <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                     </div>
@@ -3782,14 +3591,13 @@
     <!-- /Support Section -->
 
 
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function() {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
         // Debounce function to limit API calls
         function debounce(func, wait) {
             let timeout;
-            return function() {
+            return function () {
                 const context = this, args = arguments;
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
@@ -3798,14 +3606,17 @@
             };
         }
 
-        function setupAirportSearch(type) {
-            const dropdown = $(`.${type}-dropdown`);
-            const searchInput = $(`.${type}-search`);
-            const resultList = $(`.${type}-results`);
-            const displayInput = $(`.${type}-input`);
-            const countryDisplay = $(`.${type}-country`);
-
-            const searchAirports = debounce(function(query) {
+        // Generic function to set up the airport search for both "from" and "to" fields
+        function setupAirportSearch(type, multi = false) {
+            const prefix = multi ? `${type}-multi` : type;
+            const dropdown = $(`.${prefix}-dropdown`);
+            const searchInput = $(`.${prefix}-search`);
+            const resultList = $(`.${prefix}-results`);
+            const displayInput = $(`.${prefix}-input`);
+            const countryDisplay = $(`.${prefix}-country`);
+            
+            // Perform airport search using debounce to limit API calls
+            const searchAirports = debounce(function (query) {
                 if (query.length < 2) {
                     resultList.empty();
                     return;
@@ -3815,16 +3626,17 @@
                     url: "/flights/airports/search",
                     method: "GET",
                     data: { q: query },
-                    success: function(data) {
+                    success: function (data) {
                         displayResults(data);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Error fetching airport data:", error);
                         resultList.html('<li class="border-bottom px-3 py-2 text-muted">Error loading results</li>');
                     }
                 });
             }, 300);
 
+            // Display results from the airport search
             function displayResults(data) {
                 resultList.empty();
 
@@ -3833,13 +3645,13 @@
                     return;
                 }
 
-                data.forEach(function(airport) {
+                data.forEach(function (airport) {
                     const listItem = $(`
                         <li class="border-bottom">
                             <a class="dropdown-item airport-option d-block px-3 py-2" href="javascript:void(0);" 
-                            data-label="${airport.airport_name} (${airport.airport_code})"
-                            data-country="${airport.country_name}">
-                                <h6 class="fs-16 fw-medium mb-0">${airport.airport_name} (${airport.airport_code})</h6>
+                               data-label="${airport.airport_name} (${airport.airport_code || airport.airport_name})"
+                               data-country="${airport.country_name}">
+                                <h6 class="fs-16 fw-medium mb-0">${airport.airport_name} (${airport.airport_code || airport.airport_name})</h6>
                                 <p class="mb-0 text-muted">${airport.city_name}, ${airport.country_name}</p>
                             </a>
                         </li>
@@ -3848,18 +3660,27 @@
                 });
             }
 
-            searchInput.on('input', function() {
+            // Search input event listener
+            searchInput.on('input', function () {
                 searchAirports($(this).val());
             });
 
             // Handle option selection
-            resultList.on('click', '.airport-option', function() {
+            resultList.on('click', '.airport-option', function () {
                 const label = $(this).data('label');
                 const country = $(this).data('country');
+                const code = label.match(/\((.*?)\)/)?.[1] || ''; // Extract code from label
 
                 displayInput.val(label);
                 countryDisplay.text(country);
-                
+
+                // Set hidden input value
+                if (type === 'from') {
+                    $('.from-code').val(code);
+                } else if (type === 'to') {
+                    $('.to-code').val(code);
+                }
+
                 // Close the dropdown
                 dropdown.find('.dropdown-menu').removeClass('show');
             });
@@ -3869,123 +3690,110 @@
             countryDisplay.text('Country');
         }
 
-        // Initialize for both inputs
+        // Setup for single trip search
         setupAirportSearch('from');
         setupAirportSearch('to');
 
+        // Setup for multi-trip search (if necessary)
+        setupAirportSearch('from', true);
+        setupAirportSearch('to', true);
+
         // Swap functionality
-        $('.way-icon').click(function() {
-            const fromInput = $('.from-input').val();
-            const fromCountry = $('.from-country').text();
-            const toInput = $('.to-input').val();
-            const toCountry = $('.to-country').text();
-            
-            $('.from-input').val(toInput);
-            $('.from-country').text(toCountry);
-            $('.to-input').val(fromInput);
-            $('.to-country').text(fromCountry);
-        });
-    });
-    
-
-$(document).ready(function() {
-    // Initialize for multi-trip
-    setupAirportSearchMulti('from');
-    setupAirportSearchMulti('to');
-
-    function setupAirportSearchMulti(type) {
-        const dropdown = $(`.${type}-dropdown-multi`);
-        const searchInput = $(`.${type}-search-multi`);
-        const resultList = $(`.${type}-results-multi`);
-        const displayInput = $(`.${type}-input-multi`);
-        const countryDisplay = $(`.${type}-country-multi`);
-
-        // Debounce function to limit API calls
-        const searchAirports = debounce(function(query) {
-            if (query.length < 2) {
-                resultList.empty();
-                return;
-            }
-
-            $.ajax({
-                url: "/flights/airports/search",
-                method: "GET",
-                data: { q: query },
-                success: function(data) {
-                    displayResults(data);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching airport data:", error);
-                    resultList.html('<li class="border-bottom px-3 py-2 text-muted">Error loading results</li>');
-                }
-            });
-        }, 300);
-
-        function displayResults(data) {
-            resultList.empty();
-
-            if (!data || data.length === 0) {
-                resultList.append('<li class="border-bottom px-3 py-2 text-muted">No results found</li>');
-                return;
-            }
-
-            data.forEach(function(airport) {
-                const listItem = $(`
-                    <li class="border-bottom">
-                        <a class="dropdown-item airport-option d-block px-3 py-2" href="javascript:void(0);" 
-                        data-label="${airport.airport_name}"
-                        data-country="${airport.airport_name} Airport">
-                            <h6 class="fs-16 fw-medium mb-0">${airport.airport_name}</h6>
-                            <p class="mb-0 text-muted">${airport.airport_name} Airport</p>
-                        </a>
-                    </li>
-                `);
-                resultList.append(listItem);
-            });
-        }
-
-        searchInput.on('input', function() {
-            searchAirports($(this).val());
-        });
-
-        // Handle option selection
-        resultList.on('click', '.airport-option', function() {
-            const label = $(this).data('label');
-            const country = $(this).data('country');
-
-            displayInput.val(label);
-            countryDisplay.text(country);
-            
-            // Close the dropdown
-            dropdown.find('.dropdown-menu').removeClass('show');
+        $('.way-icon').click(function () {
+            swapAirportInputs('from', 'to');
         });
 
         // Swap functionality for multi-trip
-        $(`.${type}-dropdown-multi .way-icon`).click(function() {
-            const fromInput = $('.from-input-multi').val();
-            const fromCountry = $('.from-country-multi').text();
-            const toInput = $('.to-input-multi').val();
-            const toCountry = $('.to-country-multi').text();
-            
-            $('.from-input-multi').val(toInput);
-            $('.from-country-multi').text(toCountry);
-            $('.to-input-multi').val(fromInput);
-            $('.to-country-multi').text(fromCountry);
+        $('.way-icon-multi').click(function () {
+            swapAirportInputs('from-multi', 'to-multi');
         });
-    }
 
-    // Shared debounce function
-    function debounce(func, wait) {
-        let timeout;
-        return function() {
-            const context = this, args = arguments;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                func.apply(context, args);
-            }, wait);
-        };
-    }
-});
+        // Swap airport inputs helper function
+        function swapAirportInputs(fromType, toType) {
+            const fromInput = $(`.${fromType}-input`).val();
+            const fromCountry = $(`.${fromType}-country`).text();
+            const toInput = $(`.${toType}-input`).val();
+            const toCountry = $(`.${toType}-country`).text();
+
+            $(`.${fromType}-input`).val(toInput);
+            $(`.${fromType}-country`).text(toCountry);
+            $(`.${toType}-input`).val(fromInput);
+            $(`.${toType}-country`).text(fromCountry);
+        }
+    });
 </script>
 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const totalTravelersEl = document.getElementById('total-travelers');
+    const travelerSummaryEl = document.getElementById('traveler-summary');
+    const inputFields = {
+        adult: document.querySelector('.adult-count'),
+        child: document.querySelector('.child-count'),
+        infant: document.querySelector('.infant-count')
+    };
+    const cabinClassRadios = document.querySelectorAll('input[name="flightCabinClass"]');
+    const incrementButtons = document.querySelectorAll('.quantity-left-minus, .quantity-right-plus');
+
+    // Helper functions
+    function getTravelerCounts() {
+        return {
+            adults: parseInt(inputFields.adult.value) || 0,
+            children: parseInt(inputFields.child.value) || 0,
+            infants: parseInt(inputFields.infant.value) || 0
+        };
+    }
+
+    function getSelectedCabinClass() {
+        const selectedRadio = Array.from(cabinClassRadios).find(radio => radio.checked);
+        return selectedRadio ? selectedRadio.nextElementSibling.innerText : 'Economy';
+    }
+
+    function formatTravelerSummary(counts, cabinClass) {
+        const { adults, children, infants } = counts;
+        const parts = [];
+        
+        if (adults > 0) parts.push(`${adults} Adult${adults > 1 ? 's' : ''}`);
+        if (children > 0) parts.push(`${children} Child${children > 1 ? 'ren' : ''}`);
+        if (infants > 0) parts.push(`${infants} Infant${infants > 1 ? 's' : ''}`);
+        
+        parts.push(cabinClass);
+        return parts.join(', ');
+    }
+
+    function updateTravelerSummary() {
+        const counts = getTravelerCounts();
+        const total = counts.adults + counts.children + counts.infants;
+        const cabinClass = getSelectedCabinClass();
+        
+        // Update UI
+        totalTravelersEl.innerHTML = `${total} <span class="fw-normal fs-14">${total === 1 ? 'Person' : 'Persons'}</span>`;
+        travelerSummaryEl.textContent = formatTravelerSummary(counts, cabinClass);
+    }
+
+    // Event Listeners
+    function handleIncrementDecrement() {
+        setTimeout(updateTravelerSummary, 10); // Small delay to ensure input value is updated
+    }
+
+    // Set up event listeners
+    Object.values(inputFields).forEach(input => {
+        input.addEventListener('input', updateTravelerSummary);
+    });
+
+    cabinClassRadios.forEach(radio => {
+        radio.addEventListener('change', updateTravelerSummary);
+    });
+
+    incrementButtons.forEach(button => {
+        button.addEventListener('click', handleIncrementDecrement);
+    });
+
+    // Initial update
+    updateTravelerSummary();
+});
+</script>
 @endsection

@@ -28,6 +28,8 @@ Route::get('/tour', [HomeController::class, 'tour'])->name('tour');
 Route::get('/comingsoon', [HomeController::class, 'comingsoon'])->name('comingsoon');
 Route::get('/location-search', [HomeController::class, 'searchLocations']);
 
+Route::get('/flight-search', [FlightsController::class, 'search'])->name('flights.search');
+
 
 Route::get('lang/{locale}', function ($locale) {
     $supportedLocales = ['en', 'fr', 'es'];

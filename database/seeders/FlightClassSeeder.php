@@ -16,9 +16,9 @@ class FlightClassSeeder extends Seeder
         $flightClasses = [
             ['name' => 'ALL', 'baggage_info' => null, 'extra_charge' => null],
             ['name' => 'ECONOMY', 'baggage_info' => null, 'extra_charge' => null],
-            ['name' => 'PREMIUM_ECONOMY', 'baggage_info' => null, 'extra_charge' => null],
+            ['name' => 'PREMIUM ECONOMY', 'baggage_info' => null, 'extra_charge' => null],
             ['name' => 'BUSINESS', 'baggage_info' => null, 'extra_charge' => null],
-            ['name' => 'PREMIUM_BUSINESS', 'baggage_info' => null, 'extra_charge' => null],
+            ['name' => 'PREMIUM BUSINESS', 'baggage_info' => null, 'extra_charge' => null],
             ['name' => 'FIRST', 'baggage_info' => null, 'extra_charge' => null],
         ];
 
