@@ -26,18 +26,28 @@
     <div class="content">
         <div class="container">
 
-@if(!empty($flights))
-    <!-- Display flight results -->
-    @foreach($flights['results'] as $flight)
-        <!-- Flight display logic -->
-    @endforeach
-@endif
-
-@if($errors->any())
-    <div class="alert alert-danger">
-        {{ $errors->first() }}
+@if($error)
+    <div class="alert alert-warning">
+        {{ is_array($error) ? ($error['errorMessage'] ?? 'Something went wrong') : $error }}
     </div>
 @endif
+
+
+@if(count($flights))
+    @foreach($flights as $flight)
+        <div class="flight-card border rounded p-3 mb-3">
+            <p><strong>Fare:</strong> ₹{{ $flight['fF'] }}</p>
+            <p><strong>Base Fare:</strong> ₹{{ $flight['bF'] }}</p>
+            <p><strong>Seats Available:</strong> {{ $flight['sA'] }}</p>
+            <p><strong>Fare Type:</strong> {{ $flight['aR'] }}</p>
+            {{-- You can add more fields like airline, time, etc. --}}
+        </div>
+    @endforeach
+@else
+    <p>No flights found for this search.</p>
+@endif
+
+
             <!-- Flight Search -->
             <div class="card">
                 <div class="card-body">

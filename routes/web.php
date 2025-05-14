@@ -28,7 +28,7 @@ Route::get('/tour', [HomeController::class, 'tour'])->name('tour');
 Route::get('/comingsoon', [HomeController::class, 'comingsoon'])->name('comingsoon');
 Route::get('/location-search', [HomeController::class, 'searchLocations']);
 
-Route::get('/flight-search', [FlightsController::class, 'search'])->name('flights.search');
+Route::get('/flightsearch', [HomeController::class, 'flightsearch'])->name('flightsearch');
 
 
 Route::get('lang/{locale}', function ($locale) {

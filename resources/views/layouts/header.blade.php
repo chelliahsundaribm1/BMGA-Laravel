@@ -68,10 +68,18 @@
                     <div class="main-menu-wrapper">
                         <div class="navbar-logo">
                             <a class="logo-white header-logo" href="{{ route('home') }}">
-                                <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" class="logo" alt="Logo">
+                                @if($company && $company->icon)
+                                    <img src="{{ asset($company->icon) }}" alt="logo-img">
+                                @else
+                                    <img src="{{ asset('assets/default/tempLogo.png') }}" alt="logo-img" style="max-width: 120px;">
+                                @endif
                             </a>
                             <a class="logo-dark header-logo" href="{{ route('home') }}">
-                                <img src="{{ $company && $company->icon ? asset($company->icon) : asset('assets/default/tempLogo.png') }}" class="logo" alt="Logo">
+                                @if($company && $company->icon)
+                                    <img src="{{ asset($company->icon) }}" alt="logo-img">
+                                @else
+                                    <img src="{{ asset('assets/default/tempLogo.png') }}" alt="logo-img" style="max-width: 120px;">
+                                @endif  
                             </a>
                         </div>
                         <nav id="mobile-menu">

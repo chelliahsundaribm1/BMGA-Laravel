@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Airlines;
 use App\Models\FlightClass;
 use App\Models\Locations;
+use App\Services\FlightService;
+use DateTime;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -60,16 +62,66 @@ class HomeController extends Controller
         return view('comingsoon');
     }
 
-    public function flightsearch()
-    {
-        $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+ public function flightsearch(Request $request, FlightService $flightService)
+{
+    $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+    $flights = null;
+    $error = null;
 
-        // Get data from session if it exists
-        $flights = session('flights', []);
-        $searchParams = session('searchParams', []);
-
-        return view('flightsearch', compact('airlines', 'flights', 'searchParams'));
+    if ($request->has('origin') && $request->has('destination')) {
+        // Validate input
+          $data = $request->all();
+    // Cast boolean
+    if (isset($data['directFlight'])) {
+        $data['directFlight'] = filter_var($data['directFlight'], FILTER_VALIDATE_BOOLEAN);
     }
+
+    // Cast numbers
+    $data['adultCount'] = isset($data['adultCount']) ? (int) $data['adultCount'] : 0;
+    $data['childCount'] = isset($data['childCount']) ? (int) $data['childCount'] : 0;
+    $data['infantCount'] = isset($data['infantCount']) ? (int) $data['infantCount'] : 0;
+    $data['journeyType'] = isset($data['journeyType']) ? (int) $data['journeyType'] : 1;
+    $data['flightCabinClass'] = isset($data['flightCabinClass']) ? (int) $data['flightCabinClass'] : 1;
+
+// Determine which departure field to use based on journeyType
+$departureField = ($data['journeyType'] == 2) ? 'multiPreferredDeparture' : 'preferredDepartureTime';
+
+// Process dates
+foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
+    if (!empty($data[$key]) && !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $data[$key])) {
+        $parsed = DateTime::createFromFormat('d-m-Y', $data[$key]);
+        $data[$key] = $parsed ? $parsed->format('Y-m-d\TH:i:s') : null;
+    }
+}
+
+    // Inject cleaned values back into request for validation
+    $request->merge($data);
+
+        $validated = $request->validate([
+            'directFlight' => 'required|boolean',
+            'adultCount' => 'required|integer|min:1',
+            'childCount' => 'required|integer|min:0',
+            'infantCount' => 'required|integer|min:0',
+            'journeyType' => 'required|integer|in:1,2',
+            'origin' => 'required|string|size:3',
+            'destination' => 'required|string|size:3',
+            'preferredDepartureTime' => 'required|date_format:Y-m-d\TH:i:s',
+            'preferredReturnDepartureTime' => 'nullable|date_format:Y-m-d\TH:i:s',
+            'flightCabinClass' => 'required|integer|in:1,2,3',
+        ]);
+// dd($validated);
+        $result = $flightService->searchFlights($validated);
+// dd($result);
+        if ($result['status']) {
+            $flights = $result['data']['response']['results']['outboundFlights'] ?? [];
+        } else {
+            $error = $result['status'] ? null : ($result['error']['errorMessage'] ?? 'Unknown error');
+        }
+        // dd($flights, $error);
+    }
+
+    return view('flightsearch', compact('airlines', 'flights', 'error'));
+}
 
     public function searchLocations(Request $request)
     {

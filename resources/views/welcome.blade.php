@@ -70,7 +70,7 @@
         </ul>
     </div>
 @endif
-                                            <form action="{{ route('flights.search') }}" method="GET" class="flight-form" id="flight-form" data-url="{{ route('flights.search') }}">
+                                            <form action="{{ route('flightsearch') }}" method="GET" class="flight-form" id="flight-form">
                                                 <input type="hidden" name="directFlight" value="true">
 
                                                <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
@@ -139,17 +139,41 @@
                                                             <input type="hidden" name="origin" class="from-code">
                                                             <input type="hidden" name="destination" class="to-code">
                                                             <!-- Departure and return dates -->
-                                                           <div class="form-item">
-                                                                <label class="form-label fs-14 text-default mb-1">Departure</label>
-                                                                <input type="text" class="form-control datetimepicker" name="preferredDepartureTime" value="{{ date('d-m-Y') }}">
-                                                                <p class="fs-12 mb-0">Monday</p>
-                                                            </div>
-                                                            <div class="form-item round-drip">
-                                                                <label class="form-label fs-14 text-default mb-1">Return</label>
-                                                                <input type="text" class="form-control datetimepicker" name="preferredReturnDepartureTime" value="{{ date('d-m-Y') }}">
-                                                                <p class="fs-12 mb-0">Wednesday</p>
-                                                            </div>
-
+                                                          <div class="form-item">
+    <label class="form-label fs-14 text-default mb-1">Departure</label>
+    <input type="text" class="form-control datetimepicker" name="displayDeparture" value="{{ date('d-m-Y') }}" data-hidden-field="preferredDepartureTime">
+    <input type="hidden" name="preferredDepartureTime" value="{{ date('Y-m-d\TH:i:s') }}">
+    <p class="fs-12 mb-0 day-display" data-for="displayDeparture">{{ date('l') }}</p>
+</div>
+<div class="form-item round-drip">
+    <label class="form-label fs-14 text-default mb-1">Return</label>
+    <input type="text" class="form-control datetimepicker" name="displayReturn" value="{{ date('d-m-Y') }}" data-hidden-field="preferredReturnDepartureTime">
+    <input type="hidden" name="preferredReturnDepartureTime" value="{{ date('Y-m-d\TH:i:s') }}">
+    <p class="fs-12 mb-0 day-display" data-for="displayReturn">{{ date('l') }}</p>
+</div>
+<script>
+$(document).ready(function() {
+    // Initialize datepicker
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        onSelect: function(dateText, inst) {
+            // Update the hidden field with ISO format (Y-m-d\TH:i:s)
+            const hiddenFieldName = $(this).data('hidden-field');
+            const dateParts = dateText.split('-');
+            const jsDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+            
+            // Format as Y-m-d\TH:i:s
+            const isoDate = jsDate.toISOString().split('.')[0];
+            $(`input[name="${hiddenFieldName}"]`).val(isoDate);
+            
+            // Update the day display
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = days[jsDate.getDay()];
+            $(`.day-display[data-for="${this.name}"]`).text(dayName);
+        }
+    });
+});
+</script>
                                                             <!-- Travellers and cabin class Dropdown -->
                                                            <div class="form-item dropdown travellers-dropdown">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">

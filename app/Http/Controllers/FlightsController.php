@@ -44,36 +44,10 @@ class FlightsController extends Controller
         ], $response->status());
     }
 
-    public function searchFlights(Request $request)
+
+       public function searchFlights(Request $request)
     {
-      $data = $request->all();
-// dd($data);
-    // Cast boolean
-    if (isset($data['directFlight'])) {
-        $data['directFlight'] = filter_var($data['directFlight'], FILTER_VALIDATE_BOOLEAN);
-    }
-
-    // Cast numbers
-    $data['adultCount'] = isset($data['adultCount']) ? (int) $data['adultCount'] : 0;
-    $data['childCount'] = isset($data['childCount']) ? (int) $data['childCount'] : 0;
-    $data['infantCount'] = isset($data['infantCount']) ? (int) $data['infantCount'] : 0;
-    $data['journeyType'] = isset($data['journeyType']) ? (int) $data['journeyType'] : 1;
-    $data['flightCabinClass'] = isset($data['flightCabinClass']) ? (int) $data['flightCabinClass'] : 1;
-
-// Determine which departure field to use based on journeyType
-$departureField = ($data['journeyType'] == 2) ? 'multiPreferredDeparture' : 'preferredDepartureTime';
-
-// Process dates
-foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
-    if (!empty($data[$key]) && !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $data[$key])) {
-        $parsed = DateTime::createFromFormat('d-m-Y', $data[$key]);
-        $data[$key] = $parsed ? $parsed->format('Y-m-d\TH:i:s') : null;
-    }
-}
-
-    // Inject cleaned values back into request for validation
-    $request->merge($data);
-    
+        
         $validated = $request->validate([
             'directFlight' => 'required|boolean',
             'adultCount' => 'required|integer|min:1',
@@ -86,43 +60,22 @@ foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
             'preferredReturnDepartureTime' => 'nullable|date_format:Y-m-d\TH:i:s',
             'flightCabinClass' => 'required|integer|in:1,2,3',
         ]);
-    $token = $this->getTravclanToken();
-    if (!$token) {
-        return back()->withErrors(['error' => 'Travclan access token not found.']);
-    }
 
-    $payload = $validated;
-    // dd($payload);
-    if ($validated['journeyType'] === 2) {
-        unset($payload['preferredReturnDepartureTime']);
-    }
+        $token = $this->getTravclanToken();
+        if (!$token) {
+            return response()->json(['error' => 'Travclan access token not found.'], 401);
+        }
 
-    $response = Http::withHeaders($this->travclanHeaders($token))
-        ->post('https://flight-aggregator-api-sandbox.travclan.com/api/v2/flights/search', $payload);
-        // dd($response);
-    if ($response->successful()) {
-        $flights = $response->json();
-     
+        $payload = $validated;
+        if ($validated['journeyType'] === 1) {
+            unset($payload['preferredReturnDepartureTime']);
+        }
 
-         if (empty($flights['results'])) {
-        return redirect()->route('flights.search')
-            ->withInput()
-            ->withErrors(['error' => 'No flights found for your search criteria. Please try different dates or routes.']);
+        $response = Http::withHeaders($this->travclanHeaders($token))
+            ->post('https://flight-aggregator-api-sandbox.travclan.com/api/v2/flights/search', $payload);
+
+        return $this->respond($response, 'Flights retrieved successfully');
     }
-    
-    // Store results in session
-    return redirect()->route('flights.search')
-        ->with([
-            'flights' => $flights,
-            'searchParams' => $validated
-        ]);
-    } else {
-        $errorResponse = $response->json();
-        $errorMessage = $errorResponse['error']['errorMessage'] ?? 'Failed to fetch flights. Please try again.';
-        
-        return back()->withErrors(['error' => $errorMessage]);
-    }
-}
 
 
     public function getFareRules(Request $request)
