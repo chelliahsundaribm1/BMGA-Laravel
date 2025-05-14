@@ -68,6 +68,7 @@ class HomeController extends Controller
     $flights = null;
     $error = null;
 
+    
     if ($request->has('origin') && $request->has('destination')) {
         // Validate input
           $data = $request->all();
@@ -111,6 +112,8 @@ foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
         ]);
 // dd($validated);
         $result = $flightService->searchFlights($validated);
+        $flights = []; // <-- Default to empty array
+$error = null;
 // dd($result);
         if ($result['status']) {
             $flights = $result['data']['response']['results']['outboundFlights'] ?? [];

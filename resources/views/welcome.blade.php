@@ -62,15 +62,16 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade active show" id="flight">
                                         @if($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                                            <div class="alert alert-danger">
+                                                <ul class="mb-0">
+                                                    @foreach($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                             <form action="{{ route('flightsearch') }}" method="GET" class="flight-form" id="flight-form">
+                                           @csrf
                                                 <input type="hidden" name="directFlight" value="true">
 
                                                <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
@@ -139,41 +140,79 @@
                                                             <input type="hidden" name="origin" class="from-code">
                                                             <input type="hidden" name="destination" class="to-code">
                                                             <!-- Departure and return dates -->
-                                                          <div class="form-item">
+<div class="form-item">
     <label class="form-label fs-14 text-default mb-1">Departure</label>
-    <input type="text" class="form-control datetimepicker" name="displayDeparture" value="{{ date('d-m-Y') }}" data-hidden-field="preferredDepartureTime">
-    <input type="hidden" name="preferredDepartureTime" value="{{ date('Y-m-d\TH:i:s') }}">
-    <p class="fs-12 mb-0 day-display" data-for="displayDeparture">{{ date('l') }}</p>
+    <input type="text"
+           class="form-control datetimepicker"
+           name="displayDeparture"
+           value="{{ old('displayDeparture', date('d-m-Y')) }}"
+           data-hidden-field="preferredDepartureTime">
+    <input type="hidden"
+           name="preferredDepartureTime"
+           value="{{ old('preferredDepartureTime', date('Y-m-d\T00:00:00')) }}">
+    <p class="fs-12 mb-0 day-display"
+       data-for="displayDeparture">
+       {{ \Carbon\Carbon::createFromFormat('d-m-Y', old('displayDeparture', date('d-m-Y')))->format('l') }}
+    </p>
 </div>
+
 <div class="form-item round-drip">
     <label class="form-label fs-14 text-default mb-1">Return</label>
-    <input type="text" class="form-control datetimepicker" name="displayReturn" value="{{ date('d-m-Y') }}" data-hidden-field="preferredReturnDepartureTime">
-    <input type="hidden" name="preferredReturnDepartureTime" value="{{ date('Y-m-d\TH:i:s') }}">
-    <p class="fs-12 mb-0 day-display" data-for="displayReturn">{{ date('l') }}</p>
+    <input type="text"
+           class="form-control datetimepicker"
+           name="displayReturn"
+           value="{{ old('displayReturn', date('d-m-Y')) }}"
+           data-hidden-field="preferredReturnDepartureTime">
+    <input type="hidden"
+           name="preferredReturnDepartureTime"
+           value="{{ old('preferredReturnDepartureTime', date('Y-m-d\T00:00:00')) }}">
+    <p class="fs-12 mb-0 day-display"
+       data-for="displayReturn">
+       {{ \Carbon\Carbon::createFromFormat('d-m-Y', old('displayReturn', date('d-m-Y')))->format('l') }}
+    </p>
 </div>
 <script>
-$(document).ready(function() {
-    // Initialize datepicker
-    $('.datetimepicker').datepicker({
-        dateFormat: 'dd-mm-yy',
-        onSelect: function(dateText, inst) {
-            // Update the hidden field with ISO format (Y-m-d\TH:i:s)
-            const hiddenFieldName = $(this).data('hidden-field');
+    $(document).ready(function () {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        function updateHiddenAndDay(input) {
+            const hiddenFieldName = $(input).data('hidden-field');
+            const dateText = $(input).val();
+
+            if (!dateText) return;
+
             const dateParts = dateText.split('-');
             const jsDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-            
-            // Format as Y-m-d\TH:i:s
+
+            // Format: YYYY-MM-DDTHH:mm:ss
             const isoDate = jsDate.toISOString().split('.')[0];
             $(`input[name="${hiddenFieldName}"]`).val(isoDate);
-            
-            // Update the day display
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
             const dayName = days[jsDate.getDay()];
-            $(`.day-display[data-for="${this.name}"]`).text(dayName);
+            $(`.day-display[data-for="${input.name}"]`).text(dayName);
         }
+
+        $('.datetimepicker').datepicker({
+            dateFormat: 'dd-mm-yy',
+            onSelect: function () {
+                updateHiddenAndDay(this);
+            }
+        });
+
+        // Ensure update even if input was prefilled (like from session or form old data)
+        $('.datetimepicker').each(function () {
+            updateHiddenAndDay(this); // triggers update of hidden + day on page load
+        });
+
+        // Also trigger update on manual typing (if allowed)
+        $('.datetimepicker').on('change', function () {
+            updateHiddenAndDay(this);
+        });
     });
-});
 </script>
+
+
+
                                                             <!-- Travellers and cabin class Dropdown -->
                                                            <div class="form-item dropdown travellers-dropdown">
                                                                 <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" role="menu">
@@ -3820,4 +3859,44 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTravelerSummary();
 });
 </script>
+{{-- 
+@include('preloaders.preflight', ['departureCode' => '---', 'arrivalCode' => '---'])
+<script>
+  function showFlightPreloader(originCode, destinationCode) {
+      // Update the departure and arrival codes in the preloader
+      document.querySelector('.departure_city').innerText = originCode || '---';
+      document.querySelector('.arrival_city').innerText = destinationCode || '---';
+      
+      // Show the preloader
+      document.querySelector('.flight-preloader').style.display = 'flex';
+  }
+
+  // Handle form submission
+  $('#flight-form').on('submit', function(e) {
+      e.preventDefault(); // Prevent default form submission if you're using AJAX
+      
+      // Get the values from your hidden inputs
+      const origin = $('.from-code').val();       // Gets departure airport code
+      const destination = $('.to-code').val();    // Gets arrival airport code
+      
+      // Show preloader with the codes
+      showFlightPreloader(origin, destination);
+      
+      // Continue with your form submission logic here
+      // this.submit(); // Uncomment if you want to proceed with form submission
+  });
+
+  // Swap functionality - update to maintain preloader codes
+  $('.way-icon').click(function() {
+      // Swap the visible inputs
+      swapAirportInputs('from', 'to');
+      
+      // Also swap the hidden code values
+      const fromCode = $('.from-code').val();
+      const toCode = $('.to-code').val();
+      $('.from-code').val(toCode);
+      $('.to-code').val(fromCode);
+  });
+</script> --}}
+
 @endsection
