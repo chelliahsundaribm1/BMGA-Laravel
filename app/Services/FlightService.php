@@ -60,31 +60,55 @@ class FlightService
         ];
     }
 
-    public function getFareRules(string $traceId, string $resultIndex): array
-{
-    try {
-        $response = Http::post('https://api.yourprovider.com/farerules', [
-            'traceId' => $traceId,
-            'resultIndex' => $resultIndex,
-        ]);
+    public function getFlightFromSearchResults(array $results, string $resultIndex): ?array
+    {
+        $flights = collect($results['outboundFlights'] ?? [])
+            ->merge($results['inboundFlights'] ?? []);
 
-        if ($response->successful()) {
-            return [
-                'status' => true,
-                'data' => $response->json(),
-            ];
-        } else {
-            return [
-                'status' => false,
-                'error' => 'Failed to retrieve fare rules',
-            ];
-        }
-    } catch (\Exception $e) {
+        return $flights->firstWhere('rI', $resultIndex);
+    }
+
+    // app/Services/FlightService.php
+
+public function getFareRules(string $traceId, string $resultIndex): array
+{
+    $token = $this->authService->getAccessToken();
+// dd($token);
+    if (!$token) {
         return [
             'status' => false,
-            'error' => 'Exception while retrieving fare rules',
+            'error' => 'Travclan access token not found.',
         ];
     }
+
+    $payload = [
+        'traceId' => $traceId,
+        'resultIndex' => $resultIndex,
+    ];
+
+        $url = config('travclan.flight_fare_url');
+// dd($url);
+    $response = Http::withHeaders($this->travclanHeaders($token))
+        ->timeout(10)
+        ->retry(2, 200)
+        ->post($url, $payload);
+
+    if ($response->successful()) {
+        return [
+            'status' => true,
+            'data' => $response->json('results.0.fareRuleDetail', []),
+        ];
+    }
+
+    return [
+        'status' => false,
+        'error' => $response->json('errorMessage') ?? 'Failed to fetch fare rules',
+    ];
 }
+
+
+
+
+    
 
 }

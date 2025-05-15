@@ -29,7 +29,7 @@ Route::get('/comingsoon', [HomeController::class, 'comingsoon'])->name('comingso
 Route::get('/location-search', [HomeController::class, 'searchLocations']);
 
 Route::get('/flightsearch', [HomeController::class, 'flightsearch'])->name('flightsearch');
-
+Route::get('/flights/view', [HomeController::class, 'showFlightDetails'])->name('flights.view');
 
 Route::get('lang/{locale}', function ($locale) {
     $supportedLocales = ['en', 'fr', 'es'];

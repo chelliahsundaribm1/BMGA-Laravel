@@ -838,11 +838,17 @@
                                                 <div class="img-slider image-slide owl-carousel nav-center">
                                                     @foreach ([9, 5, 7] as $imgNum)
                                                         <div class="slide-images">
+                                                        <a href="{{ route('flights.view', ['traceId' => $traceId, 'resultIndex' => $flight['rI']]) }}">
                                                             <img src="{{ asset("assets/img/flight/flight-0{$imgNum}.jpg") }}"
                                                                 class="img-fluid" alt="Flight image">
                                                         </div>
+                                                                                                    </a>
+
                                                     @endforeach
                                                 </div>
+                                           <strong>Trace ID:</strong> {{ $traceId }}
+                                           Result ID:  {{ $flight['rI'] }}
+
 
                                                 <div class="fav-item">
                                                     <div class="d-flex align-items-center">
@@ -961,7 +967,7 @@
                                                 </div>
 
 
-                                                {{-- @if ($flight['fareRules']) --}}
+                                                @if ($flight['fareRules'])
                                                 <div class="border-top pt-3 mt-3">
                                                     <div class="accordion accordion-flush"
                                                         id="fareRulesAccordion-{{ $flight['rI'] }}">
@@ -1006,7 +1012,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- @endif --}}
+                                                @endif
 
                                                 <!-- Price and Booking -->
                                                 <div
@@ -1026,6 +1032,9 @@
                                                         </a>
                                                     </div>
                                                 </div>
+
+                                                
+
                                             </div>
                                         </div>
                                     </div>

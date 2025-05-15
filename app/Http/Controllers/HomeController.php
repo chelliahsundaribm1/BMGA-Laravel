@@ -72,21 +72,33 @@ class HomeController extends Controller
         $error = null;
         $totalFlightsCount = 0;
         $airlineFlightCounts = [];
+        $traceId = null;
+        $resultIds = [];
 
         if ($request->has('origin') && $request->has('destination')) {
             try {
                 $validated = $this->validateAndPrepareRequest($request);
                 $result = $flightService->searchFlights($validated);
 
+           
                 if ($result['status']) {
                     $response = $result['data']['response'];
+                    session()->put("flight_search_response_{$response['traceId']}", $response);
                     $sortKey = $request->get('sort');
+                    $traceId = $response['traceId'] ?? null;
+                    $resultIds = collect($response['results']['outboundFlights'] ?? [])
+                            ->pluck('rI')
+                            ->merge(collect($response['results']['inboundFlights'] ?? [])->pluck('rI'))
+                            ->unique()
+                            ->values()
+                            ->toArray();
 
                     $processed = $this->processFlightResults($response['results'] ?? [], $request, $sortKey, $response['traceId'] ?? null);
 
                     $flights = $processed['flights'];
                     $totalFlightsCount = $this->getTotalFlightsCount($response);
                     $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
+
                 } else {
                     $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
                 }
@@ -104,7 +116,9 @@ class HomeController extends Controller
             'airlinelogo' => $airlineLogo,
             'totalFlightsCount' => $totalFlightsCount,
             'airlineFlightCounts' => $airlineFlightCounts,
-            'sort' => $request->get('sort')
+            'sort' => $request->get('sort'),
+            'traceId' => $traceId,
+            'resultIds' => $resultIds,
         ]);
     }
 
@@ -181,28 +195,7 @@ class HomeController extends Controller
         ];
     }
 
-    // private function appendFareRules(array $flights, string $traceId): array
-    // {
-    //     return collect($flights)->map(function ($flight) use ($traceId) {
-    //         try {
-    //             $resultIndex = $flight['resultIndex'] ?? null;
-    //             if ($traceId && $resultIndex) {
-    //                 $fareRulesResponse = Http::post(config('services.flight.fare_rules_endpoint'), [
-    //                     'traceId' => $traceId,
-    //                     'resultIndex' => $resultIndex
-    //                 ]);
 
-    //                 if ($fareRulesResponse->ok()) {
-    //                     $fareRules = $fareRulesResponse->json('results')[0] ?? [];
-    //                     $flight['fareRules'] = $fareRules['fareRuleDetail'] ?? null;
-    //                 }
-    //             }
-    //         } catch (\Exception $e) {
-    //             $flight['fareRules'] = null;
-    //         }
-    //         return $flight;
-    //     })->toArray();
-    // }
 
     private function appendFareRules(array $flights, string $traceId): array
     {
@@ -351,6 +344,49 @@ class HomeController extends Controller
             ->values()
             ->toArray();
     }
+
+    
+
+public function showFlightDetails(Request $request, FlightService $flightService)
+{
+    $request->validate([
+        'traceId' => 'required|string',
+        'resultIndex' => 'required|string',
+    ]);
+
+    $traceId = $request->get('traceId');
+    $resultIndex = $request->get('resultIndex');
+
+    // Get search response from session
+    $searchData = session("flight_search_response_{$traceId}");
+
+    if (!$searchData || !isset($searchData['results'])) {
+        return back()->withErrors(['error' => 'Search session expired or not found.']);
+    }
+
+    // Extract flight details from session-stored search results
+    $flight = $flightService->getFlightFromSearchResults($searchData['results'], $resultIndex);
+
+    if (!$flight) {
+        return back()->withErrors(['error' => 'Flight not found in search results.']);
+    }
+
+    // Fetch live fare rules
+    $fareResult = $flightService->getFareRules($traceId, $resultIndex);
+// dd($fareResult);
+    if (!$fareResult['status']) {
+        return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
+    }
+
+    return view('flightdetails', [
+        'flight' => $flight,
+        'traceId' => $traceId,
+        'fareRules' => $fareResult['data'],
+    ]);
+}
+
+
+
 
     public function searchLocations(Request $request)
     {
