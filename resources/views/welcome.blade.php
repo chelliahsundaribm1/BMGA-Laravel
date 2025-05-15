@@ -3908,7 +3908,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTravelerSummary();
 });
 </script>
-
+{{-- 
 @include('preloaders.preflight', ['departureCode' => '---', 'arrivalCode' => '---'])
 <script>
   function showFlightPreloader(originCode, destinationCode) {
@@ -3946,6 +3946,6 @@ document.addEventListener('DOMContentLoaded', function() {
       $('.from-code').val(toCode);
       $('.to-code').val(fromCode);
   });
-</script>
+</script> --}}
 
 @endsection

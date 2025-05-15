@@ -514,24 +514,7 @@
                                                         Breakfast Included
                                                     </label>
                                                 </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="popular2" type="checkbox" id="popular2">
-                                                    <label class="form-check-label ms-2" for="popular2">
-                                                        Budget
-                                                    </label>
-                                                </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="popular3" type="checkbox" id="popular3">
-                                                    <label class="form-check-label ms-2" for="popular3">
-                                                        4 Star Hotels
-                                                    </label>
-                                                </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="popular4" type="checkbox" id="popular4">
-                                                    <label class="form-check-label ms-2" for="popular4">
-                                                        5 Star Hotels
-                                                    </label>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -567,48 +550,7 @@
                                                             American Airlines
                                                         </label>
                                                     </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight2" type="checkbox" id="flight2">
-                                                        <label class="form-check-label ms-2" for="flight2">
-                                                            Delta Air Lines
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight3" type="checkbox" id="flight3">
-                                                        <label class="form-check-label ms-2" for="flight3">
-                                                            Emirates
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight4" type="checkbox" id="flight4">
-                                                        <label class="form-check-label ms-2" for="flight4">
-                                                            Air France
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight5" type="checkbox" id="flight5">
-                                                        <label class="form-check-label ms-2" for="flight5">
-                                                            Japan Airlines
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight6" type="checkbox" id="flight6">
-                                                        <label class="form-check-label ms-2" for="flight6">
-                                                            Qatar Airways
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight7" type="checkbox" id="flight7">
-                                                        <label class="form-check-label ms-2" for="flight7">
-                                                            Air Canada
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight8" type="checkbox" id="flight8">
-                                                        <label class="form-check-label ms-2" for="flight8">
-                                                            United Airlines
-                                                        </label>
-                                                    </div>
+                                                    
                                                 </div>
                                                 <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show More</a>
                                             </div>
@@ -629,42 +571,7 @@
                                                             Free Wifi
                                                         </label>
                                                     </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity2" type="checkbox" id="amenity2">
-                                                        <label class="form-check-label ms-2" for="amenity2">
-                                                            Charging Ports
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity3" type="checkbox" id="amenity3">
-                                                        <label class="form-check-label ms-2" for="amenity3">
-                                                            Entertainment
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity4" type="checkbox" id="amenity4">
-                                                        <label class="form-check-label ms-2" for="amenity4">
-                                                            Blankets & Pillows
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity5" type="checkbox" id="amenity5">
-                                                        <label class="form-check-label ms-2" for="amenity5">
-                                                            Adjustable headrests
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity6" type="checkbox" id="amenity6">
-                                                        <label class="form-check-label ms-2" for="amenity6">
-                                                            Complimentary meals
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity7" type="checkbox" id="amenity7">
-                                                        <label class="form-check-label ms-2" for="amenity7">
-                                                            Privacy dividers
-                                                        </label>
-                                                    </div>
+                                                    
                                                 </div>
                                                 <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show More</a>
                                             </div>
@@ -685,36 +592,7 @@
                                                             Economy
                                                         </label>
                                                     </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin2" type="checkbox" id="cabin2">
-                                                        <label class="form-check-label ms-2" for="cabin2">
-                                                            Premium Economy
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin3" type="checkbox" id="cabin3">
-                                                        <label class="form-check-label ms-2" for="cabin3">
-                                                            Business Class
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin4" type="checkbox" id="cabin4">
-                                                        <label class="form-check-label ms-2" for="cabin4">
-                                                            First Class
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin5" type="checkbox" id="cabin5">
-                                                        <label class="form-check-label ms-2" for="cabin5">
-                                                            Basic Economy
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin6" type="checkbox" id="cabin6">
-                                                        <label class="form-check-label ms-2" for="cabin6">
-                                                            Suite Class
-                                                        </label>
-                                                    </div>
+                                                    
                                                 </div>
                                                 <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show More</a>
                                             </div>
@@ -734,24 +612,7 @@
                                                         All inclusive
                                                     </label>
                                                 </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="meals2" type="checkbox" id="meals2">
-                                                    <label class="form-check-label ms-2" for="meals2">
-                                                        Breakfast
-                                                    </label>
-                                                </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="meals3" type="checkbox" id="meals3">
-                                                    <label class="form-check-label ms-2" for="meals3">
-                                                        Lunch
-                                                    </label>
-                                                </div>
-                                                <div class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="meals4" type="checkbox" id="meals4">
-                                                    <label class="form-check-label ms-2" for="meals4">
-                                                        Dinner
-                                                    </label>
-                                                </div>
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -920,9 +781,10 @@
                             <a href="javascript:void(0);" class="fav-icon me-2 selected">
                                 <i class="isax isax-heart5"></i>
                             </a>
-                            @if($price == $flights->min('pF'))
-                            <span class="badge bg-indigo">Cheapest</span>
-                            @endif
+                     @if($price == collect($flights)->min('pF'))
+                        <span class="badge bg-indigo">Cheapest</span>
+                    @endif
+
                         </div>
                         <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">5</span>
                     </div>

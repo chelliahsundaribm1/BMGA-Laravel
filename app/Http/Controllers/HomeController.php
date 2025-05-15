@@ -109,7 +109,7 @@ foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
             'destination' => 'required|string|size:3',
             'preferredDepartureTime' => 'required|date_format:Y-m-d\TH:i:s',
             'preferredReturnDepartureTime' => 'nullable|date_format:Y-m-d\TH:i:s',
-            'flightCabinClass' => 'required|integer|in:1,2,3',
+            'flightCabinClass' => 'required|integer',
         ]);
 // dd($validated);
         $result = $flightService->searchFlights($validated);

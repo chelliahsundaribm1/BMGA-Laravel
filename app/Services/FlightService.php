@@ -3,60 +3,60 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use App\Services\TravClanAuthService;
 
 class FlightService
 {
-    protected $authService;
+    protected TravClanAuthService $authService;
 
     public function __construct(TravClanAuthService $authService)
     {
         $this->authService = $authService;
     }
 
-    private function travclanHeaders($token): array
+    private function travclanHeaders(string $token): array
     {
         return [
-            'Authorization' => 'Bearer ' . $token,
-            'Authorization-Type' => 'external-service',
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json; charset=utf-8',
-            'source' => 'website',
+            'Authorization'       => 'Bearer ' . $token,
+            'Authorization-Type'  => 'external-service',
+            'Content-Type'        => 'application/json',
+            'Accept'              => 'application/json; charset=utf-8',
+            'source'              => 'website',
         ];
     }
 
-    public function searchFlights(array $validated)
+    public function searchFlights(array $validated): array
     {
         $token = $this->authService->getAccessToken();
 
         if (!$token) {
             return [
                 'status' => false,
-                'error' => 'Travclan access token not found.'
+                'error'  => 'Travclan access token not found.',
             ];
         }
 
-        $payload = $validated;
-
+        // Remove return time if one-way
         if ($validated['journeyType'] === 1) {
-            unset($payload['preferredReturnDepartureTime']);
+            unset($validated['preferredReturnDepartureTime']);
         }
+
+        $url = config('travclan.flight_search_url');
 
         $response = Http::withHeaders($this->travclanHeaders($token))
             ->timeout(60)
             ->retry(2, 5000)
-            ->post('https://flight-aggregator-api-sandbox.travclan.com/api/v2/flights/search', $payload);
+            ->post($url, $validated);
 
         if ($response->successful()) {
             return [
                 'status' => true,
-                'data' => $response->json()
+                'data'   => $response->json(),
             ];
         }
 
         return [
             'status' => false,
-            'error' => $response->json()
+            'error'  => $response->json(),
         ];
     }
 }

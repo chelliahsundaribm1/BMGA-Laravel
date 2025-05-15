@@ -4,14 +4,15 @@ namespace App\Services;
 
 use App\Models\ApiToken;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class TravClanAuthService
 {
-    protected $baseUrl;
-    protected $merchantId;
-    protected $userId;
-    protected $apiKey;
+    protected string $baseUrl;
+    protected string $merchantId;
+    protected string $userId;
+    protected string $apiKey;
 
     public function __construct()
     {
@@ -21,44 +22,29 @@ class TravClanAuthService
         $this->apiKey = config('travclan.api_key');
     }
 
-    /**
-     * Get Access Token (either from DB or by fetching a new one)
-     *
-     * @return string
-     */
-    public function getAccessToken()
+    public function getAccessToken(): string
     {
         $token = ApiToken::where('provider', 'travclan')->first();
 
-        // Check if a valid token exists
         if ($this->isTokenValid($token)) {
             return $token->access_token;
         }
 
-        // Refresh token if available or fetch a new one
         return $this->refreshOrFetchNewToken($token);
     }
 
-    /**
-     * Check if the existing token is still valid
-     *
-     * @param ApiToken|null $token
-     * @return bool
-     */
-    protected function isTokenValid($token)
+    protected function isTokenValid(?ApiToken $token): bool
     {
-        return $token && $token->expires_at && $token->expires_at->gt(now()->addMinutes(1));
+        try {
+            return $token && $token->expires_at && $token->expires_at->gt(now()->addMinute());
+        } catch (\Throwable $e) {
+            Log::warning('Token validation failed', ['exception' => $e]);
+            return false;
+        }
     }
 
-    /**
-     * Refresh the token if a refresh token exists or fetch a new one
-     *
-     * @param ApiToken|null $token
-     * @return string
-     */
-    protected function refreshOrFetchNewToken($token)
+    protected function refreshOrFetchNewToken(?ApiToken $token): string
     {
-
         if ($token && $token->refresh_token) {
             return $this->refreshAccessToken($token->refresh_token);
         }
@@ -66,83 +52,62 @@ class TravClanAuthService
         return $this->fetchNewAccessToken();
     }
 
-    /**
-     * Fetch a new access token from the TravClan API
-     *
-     * @return string
-     * @throws Exception
-     */
-    protected function fetchNewAccessToken()
+    protected function fetchNewAccessToken(): string
     {
-        $response = Http::acceptJson()->post("{$this->baseUrl}/authentication/internal/service/login", [
+        $url = $this->baseUrl . config('travclan.login_endpoint');
+
+        $response = Http::acceptJson()->post($url, [
             'merchant_id' => $this->merchantId,
-            'user_id' => $this->userId,
-            'api_key' => $this->apiKey,
+            'user_id'     => $this->userId,
+            'api_key'     => $this->apiKey,
         ]);
 
         if ($response->successful()) {
-            $data = $response->json();
-
-            \Log::info('TravClan token response:', $data); // Add this for debugging
-            return $this->storeTokenData($data);
+            return $this->storeTokenData($response->json());
         }
 
-        throw new Exception('Failed to fetch token: ' . $response->body());
+        Log::error('TravClan token fetch failed', ['response' => $response->body()]);
+        throw new Exception('Failed to fetch access token.');
     }
 
-    /**
-     * Refresh the access token using the provided refresh token
-     *
-     * @param string $refreshToken
-     * @return string
-     * @throws Exception
-     */
-    protected function refreshAccessToken($refreshToken)
+    protected function refreshAccessToken(string $refreshToken): string
     {
-        $response = Http::acceptJson()->post("{$this->baseUrl}/authentication/internal/service/refresh", [
+        $url = $this->baseUrl . config('travclan.refresh_endpoint');
+
+        $response = Http::acceptJson()->post($url, [
             'refresh_token' => $refreshToken,
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
-            return $this->storeTokenData($data, $refreshToken);
+            return $this->storeTokenData($data, $data['RefreshToken'] ?? $refreshToken);
         }
 
-        // Fallback to fetching a new token
+        Log::warning('TravClan token refresh failed, falling back to new login', ['response' => $response->body()]);
         return $this->fetchNewAccessToken();
     }
 
-    /**
-     * Store the fetched or refreshed token data
-     *
-     * @param array $data
-     * @param string|null $refreshToken
-     * @return string
-     */
-    protected function storeTokenData($data, $refreshToken = null)
+    protected function storeTokenData(array $data, ?string $refreshToken = null): string
     {
-        // Log the data to check its structure
-        \Log::info('Storing token data:', $data);
-        
-        // Access the correct keys from the response
         $accessToken = $data['AccessToken'] ?? null;
         $refreshToken = $data['RefreshToken'] ?? $refreshToken;
-        $expiresIn = $data['expires_in'] ?? 3600; // default to 3600 seconds if not set
-    
+        $expiresIn = $data['expires_in'] ?? 3600;
+
         if (!$accessToken) {
+            Log::error('Access token missing in TravClan response', $data);
             throw new Exception('Access Token is missing in the API response.');
         }
-    
+
         ApiToken::updateOrCreate(
             ['provider' => 'travclan'],
             [
-                'access_token' => $accessToken,
+                'access_token'  => $accessToken,
                 'refresh_token' => $refreshToken,
-                'expires_at' => now()->addSeconds($expiresIn),
+                'expires_at'    => now()->addSeconds($expiresIn),
             ]
         );
-    
+
+        Log::info('TravClan token stored/updated successfully');
         return $accessToken;
     }
-    
 }
