@@ -59,4 +59,32 @@ class FlightService
             'error'  => $response->json(),
         ];
     }
+
+    public function getFareRules(string $traceId, string $resultIndex): array
+{
+    try {
+        $response = Http::post('https://api.yourprovider.com/farerules', [
+            'traceId' => $traceId,
+            'resultIndex' => $resultIndex,
+        ]);
+
+        if ($response->successful()) {
+            return [
+                'status' => true,
+                'data' => $response->json(),
+            ];
+        } else {
+            return [
+                'status' => false,
+                'error' => 'Failed to retrieve fare rules',
+            ];
+        }
+    } catch (\Exception $e) {
+        return [
+            'status' => false,
+            'error' => 'Exception while retrieving fare rules',
+        ];
+    }
+}
+
 }
