@@ -31,9 +31,7 @@
         {{ is_array($error) ? ($error['errorMessage'] ?? 'Something went wrong') : $error }}
     </div>
 @endif
-@if(isset($flightCount))
-    <p>{{ $flightCount }} flight{{ $flightCount === 1 ? '' : 's' }} found.</p>
-@endif
+
 
 
 
@@ -409,72 +407,26 @@
                     <h5 class="mb-2">Choose type of Flights you are interested</h5>
                 </div>
                 <div class="row">
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-01.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">American Airline</a></h6>
-                                <p class="fs-14">216 Flights</p>
+              <div class="row">
+                    @foreach($airlineFlightCounts as $airline)
+                        <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                            <div class="d-flex align-items-center hotel-type-item mb-3">
+                                <div class="avatar avatar-lg">
+                                    {{-- Optional logo matching --}}
+                                    @php
+                                        $logo = optional($airlinelogo->firstWhere('code', $airline['code']))->logo;
+                                    @endphp
+                                    <img src="{{ $logo ?? asset('assets/img/default-airline.png') }}" class="rounded-circle" alt="{{ $airline['name'] }}">
+                                </div>
+                                <div class="ms-2">
+                                    <h6 class="fs-16 fw-medium">{{ $airline['name'] }}</h6>
+                                    <p class="fs-14">{{ $airline['count'] }} Flights</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-02.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Delta Airlines</a></h6>
-                                <p class="fs-14">569 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-03.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Emirates</a></h6>
-                                <p class="fs-14">129 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-04.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Air France</a></h6>
-                                <p class="fs-14">600 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-05.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Qatar Airways</a></h6>
-                                <p class="fs-14">200 Flights</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="d-flex align-items-center hotel-type-item mb-3">
-                            <a href="flight-grid.html" class="avatar avatar-lg">
-                                <img src="assets/img/flight/flight-company-06.svg" class="rounded-circle" alt="img">
-                            </a>
-                            <div class="ms-2">
-                                <h6 class="fs-16 fw-medium"><a href="flight-grid.html">Air India</a></h6>
-                                <p class="fs-14">180 Flights</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
+                </div>
+
                 </div>
             </div>
             <!-- /Flight Types -->
@@ -691,48 +643,52 @@
 
                 <div class="col-xl-9 col-lg-8">
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <h6 class="mb-3">1920 Flights Found on Your Search</h6>
+                        @if($totalFlightsCount)
+                            <h6 class="mb-3">{{ $totalFlightsCount }} Flights Found on Your Search</h6>
+                        @endif
                         <div class="d-flex align-items-center flex-wrap">
-                            <div class="list-item d-flex align-items-center mb-3">
-                                <a href="flight-grid.html" class="list-icon active me-2"><i class="isax isax-grid-1"></i></a>
-                                <a href="flight-list.html" class="list-icon me-2"><i class="isax isax-firstline"></i></a>
-                            </div>
                             <div class="dropdown mb-3">
                                 <a href="javascript:void(0);" class="dropdown-toggle py-2" data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="fw-medium text-gray-9">Sort By : </span>Recommended
                                 </a>
                                 <div class="dropdown-menu dropdown-sm">
-                                    <form action="flight-grid.html">
-                                        <h6 class="fw-medium fs-16 mb-3">Sort By</h6>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend1" checked="">
-                                            <label class="form-check-label ms-2" for="recommend1">Recommended</label>
-                                        </div>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend2">
-                                            <label class="form-check-label ms-2" for="recommend2">Price: low to high</label>
-                                        </div>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend3">
-                                            <label class="form-check-label ms-2" for="recommend3">Price: high to low</label>
-                                        </div>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend4">
-                                            <label class="form-check-label ms-2" for="recommend4">Newest</label>
-                                        </div>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend5">
-                                            <label class="form-check-label ms-2" for="recommend5">Ratings</label>
-                                        </div>
-                                        <div class="form-check d-flex align-items-center ps-0 mb-0">
-                                            <input class="form-check-input ms-0 mt-0" name="recommend" type="checkbox" id="recommend6">
-                                            <label class="form-check-label ms-2" for="recommend6">Reviews</label>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-end border-top pt-3 mt-3">
-                                            <a href="javascript:void(0);" class="btn btn-light btn-sm me-2">Reset</a>
-                                            <button type="submit" class="btn btn-primary btn-sm">Apply</button>
-                                        </div>
-                                    </form>
+                                    <form method="GET" action="{{ route('flights.search') }}">
+                                            <h6 class="fw-medium fs-16 mb-3">Sort By</h6>
+
+                                            @php
+                                                $sort = session('sort') ?? request('sort');
+                                            @endphp
+
+                                            {{-- Preserve search parameters --}}
+                                            @foreach(request()->except('sort') as $key => $value)
+                                                @if(is_array($value))
+                                                    @foreach($value as $subValue)
+                                                        <input type="hidden" name="{{ $key }}[]" value="{{ $subValue }}">
+                                                    @endforeach
+                                                @else
+                                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                                @endif
+                                            @endforeach
+
+                                            @foreach([
+                                                'recommended' => 'Recommended',
+                                                'price_low_high' => 'Price: low to high',
+                                                'price_high_low' => 'Price: high to low',
+                                                'newest' => 'Newest (latest departure)'
+                                            ] as $key => $label)
+                                                <div class="form-check d-flex align-items-center ps-0 mb-2">
+                                                    <input class="form-check-input ms-0 mt-0" name="sort" type="radio" id="sort_{{ $key }}" value="{{ $key }}" {{ $sort === $key ? 'checked' : '' }}>
+                                                    <label class="form-check-label ms-2" for="sort_{{ $key }}">{{ $label }}</label>
+                                                </div>
+                                            @endforeach
+
+                                            <div class="d-flex align-items-center justify-content-end border-top pt-3 mt-3">
+                                                <a href="{{ route('flights.search', request()->except('sort')) }}" class="btn btn-light btn-sm me-2">Reset</a>
+                                                <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                                            </div>
+                                        </form>
+
+
                                 </div>
                             </div>
                         </div>
@@ -746,154 +702,107 @@
                     <div class="row justify-content-center">
 
                         <!-- Flight Grid -->
-                     @if(count($flights))
-    @foreach($flights as $flight)
-        @php
-            $segment = $flight['sg'][0];
-            $airline = $segment['al'];
-            $origin = $segment['or'];
-            $destination = $segment['ds'];
+                    @foreach (['outboundFlights', 'inboundFlights'] as $direction)
 
-            $departureTime = \Carbon\Carbon::parse($origin['dT'])->format('M d, Y h:i A');
-            $arrivalTime = \Carbon\Carbon::parse($destination['aT'])->format('M d, Y h:i A');
+                        @if (isset($flights[$direction]) && count($flights[$direction]))
+                            @foreach ($flights[$direction] as $flight)
+                            @php
+                                $segment = $flight['sg'][0] ?? null;
+                                $airline = $segment['al'] ?? [];
+                                $origin = $segment['or'] ?? [];
+                                $destination = $segment['ds'] ?? [];
 
-            $price = $flight['pF'];
-            $seatsLeft = $segment['nOSA'];
-        @endphp
+                                $departureTime = isset($origin['dT']) ? \Carbon\Carbon::parse($origin['dT'])->format('M d, Y h:i A') : '';
+                                $arrivalTime = isset($destination['aT']) ? \Carbon\Carbon::parse($destination['aT'])->format('M d, Y h:i A') : '';
 
-        <!-- Flight Grid -->
-        <div class="col-xxl-4 col-md-6 d-flex">
-            <div class="place-item mb-4 flex-fill">
-                <div class="place-img">
-                    <div class="img-slider image-slide owl-carousel nav-center">
-                        <div class="slide-images">
-                            <img src="{{ asset('assets/img/flight/flight-09.jpg') }}" class="img-fluid" alt="img">
-                        </div>
-                        <div class="slide-images">
-                            <img src="{{ asset('assets/img/flight/flight-05.jpg') }}" class="img-fluid" alt="img">
-                        </div>
-                        <div class="slide-images">
-                            <img src="{{ asset('assets/img/flight/flight-07.jpg') }}" class="img-fluid" alt="img">
-                        </div>
-                    </div>
-                    <div class="fav-item">
-                        <div class="d-flex align-items-center">
-                            <a href="javascript:void(0);" class="fav-icon me-2 selected">
-                                <i class="isax isax-heart5"></i>
-                            </a>
-                     @if($price == collect($flights)->min('pF'))
-                        <span class="badge bg-indigo">Cheapest</span>
-                    @endif
+                                $price = $flight['pF'] ?? 'N/A';
+                                $seatsLeft = $segment['nOSA'] ?? 0;
+                            @endphp
 
-                        </div>
-                        <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">5</span>
-                    </div>
-                </div>
-                <div class="place-content">
-                    <div class="flight-loc d-flex align-items-center justify-content-between mb-2">
-                        <span class="loc-name d-inline-flex align-items-center">
-                            <i class="isax isax-airplane rotate-45 me-2"></i>{{ $origin['cN'] }}
-                        </span>
-                        <a href="javascript:void(0);" class="arrow-icon flex-shrink-0">
-                            <i class="isax isax-arrow-2"></i>
-                        </a>
-                        <span class="loc-name d-inline-flex align-items-center">
-                            <i class="isax isax-airplane rotate-135 me-2"></i>{{ $destination['cN'] }}
-                        </span>
-                    </div>
-                    <h5 class="text-truncate mb-1">
-                        <a href="flight-details.html">{{ $airline['alN'] }} {{ $airline['fN'] }}</a>
-                    </h5>
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="avatar avatar-sm me-2">
-                            <img src="{{ asset('assets/airlines_icons/' . $airline['alC'] . '.png') }}" class="rounded-circle" alt="icon">
-                        </span>
-                        <p class="fs-14 mb-0 me-2">{{ $airline['alN'] }}</p>
-                        <p class="fs-14 mb-0">
-                            <i class="ti ti-point-filled text-primary me-2"></i>
-                            {{ $segment['cC'] > 1 ? $segment['cC'] - 1 . '-stop' : 'Non-stop' }}
-                        </p>
-                    </div>
-                    <div class="date-info p-2 mb-3">
-                        <p class="d-flex align-items-center">
-                            <i class="isax isax-calendar-2 me-2"></i>
-                            {{ $departureTime }} - {{ $arrivalTime }}
-                        </p>
-                        <p class="d-flex align-items-center">
-                            <i class="isax isax-clock me-2"></i>
-                            {{ $segment['dr'] }} min
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between border-top pt-3">
-                        <h6 class="text-primary">
-                            <span class="fs-14 fw-normal text-default">From </span>₹{{ number_format($price) }}
-                        </h6>
-                        <div class="d-flex align-items-center">
-                            <span class="badge {{ $seatsLeft < 10 ? 'bg-danger' : 'bg-outline-success' }} fs-10 fw-medium me-2">
-                                {{ $seatsLeft > 0 ? $seatsLeft . ' Seats Left' : '0 Seats Left' }}
-                            </span>
-                            <a href="javascript:void(0);" class="avatar avatar-sm">
-                                <img src="{{ asset('assets/img/users/user-08.jpg') }}" class="rounded-circle" alt="img">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
-@else
-    <p>No flights found.</p>
-@endif
+                                <!-- Flight Grid -->
+                                <div class="col-xxl-4 col-md-6 d-flex">
+                                    <div class="place-item mb-4 flex-fill">
+                                        <div class="place-img">
+                                            <div class="img-slider image-slide owl-carousel nav-center">
+                                                <div class="slide-images">
+                                                    <img src="{{ asset('assets/img/flight/flight-09.jpg') }}" class="img-fluid" alt="img">
+                                                </div>
+                                                <div class="slide-images">
+                                                    <img src="{{ asset('assets/img/flight/flight-05.jpg') }}" class="img-fluid" alt="img">
+                                                </div>
+                                                <div class="slide-images">
+                                                    <img src="{{ asset('assets/img/flight/flight-07.jpg') }}" class="img-fluid" alt="img">
+                                                </div>
+                                            </div>
+                                            <div class="fav-item">
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0);" class="fav-icon me-2 selected">
+                                                        <i class="isax isax-heart5"></i>
+                                                    </a>
+                                            @if($price == collect($flights)->min('pF'))
+                                                <span class="badge bg-indigo">Cheapest</span>
+                                            @endif
 
-                        <!-- /Flight Grid -->
-
-                        {{-- <!-- Flight Grid -->
-                        <div class="col-xxl-4 col-md-6 d-flex">
-                            <div class="place-item mb-4 flex-fill">
-                                <div class="place-img">
-                                    <a href="flight-details.html">
-                                        <img src="assets/img/flight/flight-08.jpg" class="img-fluid" alt="img">
-                                    </a>
-                                    <div class="fav-item">
-                                        <div class="d-flex align-items-center">
-                                            <a href="javascript:void(0);" class="fav-icon me-2">
-                                                <i class="isax isax-heart5"></i>
-                                            </a>
-                                            <span class="badge bg-indigo">Cheapest</span>
+                                                </div>
+                                                <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">5</span>
+                                            </div>
                                         </div>
-                                        <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">4.3</span>
-                                    </div>
-                                </div>
-                                <div class="place-content">
-                                    <div class="flight-loc d-flex align-items-center justify-content-between mb-2">
-                                        <span class="loc-name d-inline-flex align-items-center"><i class="isax isax-airplane rotate-45 me-2"></i>London</span>
-                                        <a href="javascript:void(0);" class="arrow-icon flex-shrink-0"><i class="isax isax-arrow-2"></i></a>
-                                        <span class="loc-name d-inline-flex align-items-center"><i class="isax isax-airplane rotate-135 me-2"></i>London</span>
-                                    </div>
-                                    <h5 class="text-truncate mb-1"><a href="flight-details.html">SkyBound 102</a></h5>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="avatar avatar-sm me-2">
-                                            <img src="assets/img/icons/airindia.svg" class="rounded-circle" alt="icon">
-                                        </span>
-                                        <p class="fs-14 mb-0 me-2">Indigo</p>
-                                        <p class="fs-14 mb-0"><i class="ti ti-point-filled text-primary me-2"></i>1-stop at Dubai</p>
-                                    </div>
-                                    <div class="date-info p-2 mb-3">
-                                        <p class="d-flex align-items-center"><i class="isax isax-calendar-2 me-2"></i>Aug 13, 2024 - Aug 15, 2024</p>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between border-top pt-3">
-                                        <h6 class="text-primary"><span class="fs-14 fw-normal text-default">From </span>$600</h6>
-                                        <div class="d-flex align-items-center">
-                                            <span class="badge bg-outline-success fs-10 fw-medium me-2">18 Seats Left</span>
-                                            <a href="javascript:void(0);" class="avatar avatar-sm">
-                                                <img src="assets/img/users/user-09.jpg" class="rounded-circle" alt="img">
-                                            </a>
+                                        <div class="place-content">
+                                            <div class="flight-loc d-flex align-items-center justify-content-between mb-2">
+                                                <span class="loc-name d-inline-flex align-items-center">
+                                                    <i class="isax isax-airplane rotate-45 me-2"></i>{{ $origin['cN'] }}
+                                                </span>
+                                                <a href="javascript:void(0);" class="arrow-icon flex-shrink-0">
+                                                    <i class="isax isax-arrow-2"></i>
+                                                </a>
+                                                <span class="loc-name d-inline-flex align-items-center">
+                                                    <i class="isax isax-airplane rotate-135 me-2"></i>{{ $destination['cN'] }}
+                                                </span>
+                                            </div>
+                                            <h5 class="text-truncate mb-1">
+                                                <a href="flight-details.html">{{ $airline['alN'] }} {{ $airline['fN'] }}</a>
+                                            </h5>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span class="avatar avatar-sm me-2">
+                                                    <img src="{{ asset('assets/airlines_icons/' . $airline['alC'] . '.png') }}" class="rounded-circle" alt="icon">
+                                                </span>
+                                                <p class="fs-14 mb-0 me-2">{{ $airline['alN'] }}</p>
+                                                <p class="fs-14 mb-0">
+                                                    <i class="ti ti-point-filled text-primary me-2"></i>
+                                                    {{ $segment['cC'] > 1 ? $segment['cC'] - 1 . '-stop' : 'Non-stop' }}
+                                                </p>
+                                            </div>
+                                            <div class="date-info p-2 mb-3">
+                                                <p class="d-flex align-items-center">
+                                                    <i class="isax isax-calendar-2 me-2"></i>
+                                                    {{ $departureTime }} - {{ $arrivalTime }}
+                                                </p>
+                                                <p class="d-flex align-items-center">
+                                                    <i class="isax isax-clock me-2"></i>
+                                                    {{ $segment['dr'] }} min
+                                                </p>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between border-top pt-3">
+                                                <h6 class="text-primary">
+                                                    <span class="fs-14 fw-normal text-default">From </span>₹{{ number_format($price) }}
+                                                </h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge {{ $seatsLeft < 10 ? 'bg-danger' : 'bg-outline-success' }} fs-10 fw-medium me-2">
+                                                        {{ $seatsLeft > 0 ? $seatsLeft . ' Seats Left' : '0 Seats Left' }}
+                                                    </span>
+                                                    <a href="javascript:void(0);" class="avatar avatar-sm">
+                                                        <img src="{{ asset('assets/img/users/user-08.jpg') }}" class="rounded-circle" alt="img">
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- /Flight Grid --> --}}
+                            @endforeach
+                        @else
+                            <p>No flights found.</p>
+                        @endif
+                    @endforeach
 
 
                     </div>
