@@ -64,10 +64,11 @@ class HomeController extends Controller
 
  public function flightsearch(Request $request, FlightService $flightService)
 {
+    // dd($request->all());
     $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
     $flights = null;
     $error = null;
-
+    $airlinelogo = Airlines::all();
     
     if ($request->has('origin') && $request->has('destination')) {
         // Validate input
@@ -123,7 +124,7 @@ $error = null;
         // dd($flights, $error);
     }
 
-    return view('flightsearch', compact('airlines', 'flights', 'error'));
+    return view('flightsearch', compact('airlines', 'flights', 'error', 'airlinelogo'));
 }
 
     public function searchLocations(Request $request)

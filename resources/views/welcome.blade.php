@@ -140,78 +140,80 @@
                                                             <input type="hidden" name="origin" class="from-code">
                                                             <input type="hidden" name="destination" class="to-code">
                                                             <!-- Departure and return dates -->
-<div class="form-item">
-    <label class="form-label fs-14 text-default mb-1">Departure</label>
-    <input type="text"
-           class="form-control datetimepicker"
-           name="displayDeparture"
-           value="{{ old('displayDeparture', date('d-m-Y')) }}"
-           data-hidden-field="preferredDepartureTime">
-    <input type="hidden"
-           name="preferredDepartureTime"
-           value="{{ old('preferredDepartureTime', date('Y-m-d\T00:00:00')) }}">
-    <p class="fs-12 mb-0 day-display"
-       data-for="displayDeparture">
-       {{ \Carbon\Carbon::createFromFormat('d-m-Y', old('displayDeparture', date('d-m-Y')))->format('l') }}
-    </p>
-</div>
+                                                            {{-- <div class="form-item">
+                                                                <label class="form-label fs-14 text-default mb-1">Departure</label>
+                                                                <input type="text" class="form-control datetimepicker" value="21-10-2024">
+                                                                <p class="fs-12 mb-0">Monday</p>
+                                                            </div>
+                                                            <div class="form-item round-drip">
+                                                                <label class="form-label fs-14 text-default mb-1">Return</label>
+                                                                <input type="text" class="form-control datetimepicker" value="23-10-2024">
+                                                                <p class="fs-12 mb-0">Wednesday</p>
+                                                            </div> --}}
+                                                            <div class="form-item">
+                                                                <label class="form-label fs-14 text-default mb-1">Departure</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    id="preferredDepartureTime" 
+                                                                    name="preferredDepartureTime" 
+                                                                    class="form-control datetimepicker" 
+                                                                    value=""
+                                                                >
+                                                                <p class="fs-12 mb-0" id="departureDay"></p>
+                                                            </div>
 
-<div class="form-item round-drip">
-    <label class="form-label fs-14 text-default mb-1">Return</label>
-    <input type="text"
-           class="form-control datetimepicker"
-           name="displayReturn"
-           value="{{ old('displayReturn', date('d-m-Y')) }}"
-           data-hidden-field="preferredReturnDepartureTime">
-    <input type="hidden"
-           name="preferredReturnDepartureTime"
-           value="{{ old('preferredReturnDepartureTime', date('Y-m-d\T00:00:00')) }}">
-    <p class="fs-12 mb-0 day-display"
-       data-for="displayReturn">
-       {{ \Carbon\Carbon::createFromFormat('d-m-Y', old('displayReturn', date('d-m-Y')))->format('l') }}
-    </p>
-</div>
-<script>
-    $(document).ready(function () {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                                                            <div class="form-item round-drip">
+                                                                <label class="form-label fs-14 text-default mb-1">Return</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    id="preferredReturnDepartureTime" 
+                                                                    name="preferredReturnDepartureTime" 
+                                                                    class="form-control datetimepicker" 
+                                                                    value=""
+                                                                >
+                                                                <p class="fs-12 mb-0" id="returnDay"></p>
+                                                            </div>
 
-        function updateHiddenAndDay(input) {
-            const hiddenFieldName = $(input).data('hidden-field');
-            const dateText = $(input).val();
+                                                            <script>
+                                                                // Utility function to format date as dd-mm-yyyy
+                                                                function formatDate(date) {
+                                                                    return date.toLocaleDateString('en-GB').split('/').join('-');
+                                                                }
 
-            if (!dateText) return;
+                                                                // Utility function to get weekday name
+                                                                function getWeekday(dateStr) {
+                                                                    const [day, month, year] = dateStr.split('-');
+                                                                    const date = new Date(`${year}-${month}-${day}`);
+                                                                    return date.toLocaleDateString('en-US', { weekday: 'long' });
+                                                                }
 
-            const dateParts = dateText.split('-');
-            const jsDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                                                                // Set today's date for departure input
+                                                                const today = new Date();
+                                                                const formattedToday = formatDate(today);
+                                                                const departureInput = document.getElementById('preferredDepartureTime');
+                                                                const departureDay = document.getElementById('departureDay');
+                                                                departureInput.value = formattedToday;
+                                                                departureDay.textContent = getWeekday(formattedToday);
 
-            // Format: YYYY-MM-DDTHH:mm:ss
-            const isoDate = jsDate.toISOString().split('.')[0];
-            $(`input[name="${hiddenFieldName}"]`).val(isoDate);
+                                                                // Set return input to null (empty)
+                                                                const returnInput = document.getElementById('preferredReturnDepartureTime');
+                                                                const returnDay = document.getElementById('returnDay');
+                                                                returnInput.value = '';
+                                                                returnDay.textContent = '';
 
-            const dayName = days[jsDate.getDay()];
-            $(`.day-display[data-for="${input.name}"]`).text(dayName);
-        }
-
-        $('.datetimepicker').datepicker({
-            dateFormat: 'dd-mm-yy',
-            onSelect: function () {
-                updateHiddenAndDay(this);
-            }
-        });
-
-        // Ensure update even if input was prefilled (like from session or form old data)
-        $('.datetimepicker').each(function () {
-            updateHiddenAndDay(this); // triggers update of hidden + day on page load
-        });
-
-        // Also trigger update on manual typing (if allowed)
-        $('.datetimepicker').on('change', function () {
-            updateHiddenAndDay(this);
-        });
-    });
-</script>
-
-
+                                                                // Attach date change event
+                                                                document.querySelectorAll('.datetimepicker').forEach(input => {
+                                                                    input.addEventListener('change', function () {
+                                                                        const dateVal = this.value;
+                                                                        if (this.id === 'preferredDepartureTime') {
+                                                                            departureDay.textContent = getWeekday(dateVal);
+                                                                        } else if (this.id === 'preferredReturnDepartureTime') {
+                                                                            returnDay.textContent = getWeekday(dateVal);
+                                                                        }
+                                                                    });
+                                                                });
+                                                            </script>
+                                                                
 
                                                             <!-- Travellers and cabin class Dropdown -->
                                                            <div class="form-item dropdown travellers-dropdown">
@@ -336,11 +338,58 @@
                                                                     <ul class="to-results list-unstyled"></ul>
                                                                 </div>
                                                             </div>
-                                                             <div class="form-item">
+                                                            <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
-                                                                <input type="text" class="form-control datetimepicker" name="multipreferredDeparture" value="21-10-2024">
-                                                                <p class="fs-12 mb-0">Monday</p>
+                                                                <input 
+                                                                    type="text" 
+                                                                    id="multiPreferredDeparture" 
+                                                                    name="multiPreferredDeparture" 
+                                                                    class="form-control datetimepicker" 
+                                                                    value=""
+                                                                >
+                                                                <p class="fs-12 mb-0" id="multidepartureDay"></p>
                                                             </div>
+
+
+                                                            <script>
+                                                                // Utility function to format date as dd-mm-yyyy
+                                                                function formatDate(date) {
+                                                                    return date.toLocaleDateString('en-GB').split('/').join('-');
+                                                                }
+
+                                                                // Utility function to get weekday name
+                                                                function getWeekday(dateStr) {
+                                                                    const [day, month, year] = dateStr.split('-');
+                                                                    const date = new Date(`${year}-${month}-${day}`);
+                                                                    return date.toLocaleDateString('en-US', { weekday: 'long' });
+                                                                }
+
+                                                                // Set today's date for departure input
+                                                                const today = new Date();
+                                                                const formattedToday = formatDate(today);
+                                                                const departureInput = document.getElementById('multiPreferredDeparture');
+                                                                const multidepartureDay = document.getElementById('multidepartureDay');
+                                                                departureInput.value = formattedToday;
+                                                                multidepartureDay.textContent = getWeekday(formattedToday);
+
+                                                                // Set return input to null (empty)
+                                                                const returnInput = document.getElementById('preferredReturnDepartureTime');
+                                                                const returnDay = document.getElementById('returnDay');
+                                                                returnInput.value = '';
+                                                                returnDay.textContent = '';
+
+                                                                // Attach date change event
+                                                                document.querySelectorAll('.datetimepicker').forEach(input => {
+                                                                    input.addEventListener('change', function () {
+                                                                        const dateVal = this.value;
+                                                                        if (this.id === 'multiPreferredDeparture') {
+                                                                            multidepartureDay.textContent = getWeekday(dateVal);
+                                                                        } else if (this.id === 'preferredReturnDepartureTime') {
+                                                                            returnDay.textContent = getWeekday(dateVal);
+                                                                        }
+                                                                    });
+                                                                });
+                                                            </script>       
                                                         </div>
                                                         <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                     </div>
@@ -3859,7 +3908,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTravelerSummary();
 });
 </script>
-{{-- 
+
 @include('preloaders.preflight', ['departureCode' => '---', 'arrivalCode' => '---'])
 <script>
   function showFlightPreloader(originCode, destinationCode) {
@@ -3897,6 +3946,6 @@ document.addEventListener('DOMContentLoaded', function() {
       $('.from-code').val(toCode);
       $('.to-code').val(fromCode);
   });
-</script> --}}
+</script>
 
 @endsection

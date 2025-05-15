@@ -920,9 +920,11 @@
                             <a href="javascript:void(0);" class="fav-icon me-2 selected">
                                 <i class="isax isax-heart5"></i>
                             </a>
+                            @if($price == $flights->min('pF'))
                             <span class="badge bg-indigo">Cheapest</span>
+                            @endif
                         </div>
-                        <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">5.0</span>
+                        <span class="badge badge-warning badge-xs text-gray-9 fs-13 fw-medium rounded">5</span>
                     </div>
                 </div>
                 <div class="place-content">
@@ -942,7 +944,7 @@
                     </h5>
                     <div class="d-flex align-items-center mb-2">
                         <span class="avatar avatar-sm me-2">
-                            <img src="{{ asset('assets/img/icons/airindia.svg') }}" class="rounded-circle" alt="icon">
+                            <img src="{{ asset('assets/airlines_icons/' . $airline['alC'] . '.png') }}" class="rounded-circle" alt="icon">
                         </span>
                         <p class="fs-14 mb-0 me-2">{{ $airline['alN'] }}</p>
                         <p class="fs-14 mb-0">
@@ -955,14 +957,18 @@
                             <i class="isax isax-calendar-2 me-2"></i>
                             {{ $departureTime }} - {{ $arrivalTime }}
                         </p>
+                        <p class="d-flex align-items-center">
+                            <i class="isax isax-clock me-2"></i>
+                            {{ $segment['dr'] }} min
+                        </p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between border-top pt-3">
                         <h6 class="text-primary">
                             <span class="fs-14 fw-normal text-default">From </span>₹{{ number_format($price) }}
                         </h6>
                         <div class="d-flex align-items-center">
-                            <span class="badge bg-outline-success fs-10 fw-medium me-2">
-                                {{ $seatsLeft }} Seats Left
+                            <span class="badge {{ $seatsLeft < 10 ? 'bg-danger' : 'bg-outline-success' }} fs-10 fw-medium me-2">
+                                {{ $seatsLeft > 0 ? $seatsLeft . ' Seats Left' : '0 Seats Left' }}
                             </span>
                             <a href="javascript:void(0);" class="avatar avatar-sm">
                                 <img src="{{ asset('assets/img/users/user-08.jpg') }}" class="rounded-circle" alt="img">

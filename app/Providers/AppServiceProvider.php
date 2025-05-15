@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Company;
+use App\Services\TravClanAuthService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,6 +15,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+            $this->app->bind(TravClanAuthService::class);
+
     }
 
     /**
