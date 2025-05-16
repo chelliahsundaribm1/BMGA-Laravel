@@ -66,7 +66,6 @@ class HomeController extends Controller
         return view('comingsoon');
     }
 
-  
     public function flightSearch(Request $request, FlightService $flightService)
     {
         // dd($request->all());
@@ -109,14 +108,11 @@ class HomeController extends Controller
                     $totalFlightsCount = $this->getTotalFlightsCount($response);
                     $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
                     $faresets = $this->getFaresets($response);
-                    // dd($flights);
                 } else {
                     $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
                 }
             } catch (\Illuminate\Validation\ValidationException $e) {
-                $errorMessages = collect($e->errors())->flatten()->toArray();
-                $error = 'Invalid search parameters: ' . implode(', ', $errorMessages);
-
+                $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
             } catch (\Exception $e) {
                 $error = 'An error occurred while searching for flights';
             }
@@ -136,8 +132,6 @@ class HomeController extends Controller
             'faresets' => $faresets,
         ]);
     }
-
-
 
     private function getFaresets(array $response): array
     {
@@ -177,16 +171,11 @@ class HomeController extends Controller
             : 'preferredDepartureTime';
 
         foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
-            if (!empty($data[$key]) && is_string($data[$key])) {
-                // Check if already in ISO format
-                if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $data[$key])) {
-                    // Try to parse common input formats (like d-m-Y)
-                    $parsed = DateTime::createFromFormat('d-m-Y', $data[$key]);
-                    $data[$key] = $parsed ? $parsed->format('Y-m-d\TH:i:s') : null;
-                }
+            if (!empty($data[$key]) && !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $data[$key])) {
+                $parsed = DateTime::createFromFormat('d-m-Y', $data[$key]);
+                $data[$key] = $parsed ? $parsed->format('Y-m-d\TH:i:s') : null;
             }
         }
-
 
         $request->merge($data);
 
@@ -322,27 +311,26 @@ class HomeController extends Controller
     /**
      * Sort flights based on criteria
      */
-  private function sortFlights(array $flights, ?string $sortKey): array
-{
-    return collect($flights)->sort(function ($a, $b) use ($sortKey) {
-        switch ($sortKey) {
-            case 'price_low_high':
-                return $a['fare']['totalFare'] <=> $b['fare']['totalFare'];
+    private function sortFlights(array $flights, ?string $sort): array
+    {
+        $sortMap = [
+            'price_low_high' => ['pF', 'asc'],
+            'price_high_low' => ['pF', 'desc'],
+            'duration_short' => ['sg.0.dr', 'asc'],
+            'duration_long' => ['sg.0.dr', 'desc'],
+            'early_departure' => ['sg.0.or.dT', 'asc'],
+            'late_departure' => ['sg.0.or.dT', 'desc'],
+            'early_arrival' => ['sg.0.ds.aT', 'asc'],
+            'late_arrival' => ['sg.0.ds.aT', 'desc'],
+        ];
 
-            case 'price_high_low':
-                return $b['fare']['totalFare'] <=> $a['fare']['totalFare'];
-
-            case 'newest':
-                return strtotime($b['segments'][0]['departureTime']) <=> strtotime($a['segments'][0]['departureTime']);
-
-            case 'recommended':
-            default:
-                // If you have any "recommended" logic like ranking, otherwise use departure time as fallback
-                return strtotime($a['segments'][0]['departureTime']) <=> strtotime($b['segments'][0]['departureTime']);
+        if (isset($sortMap[$sort])) {
+            [$key, $direction] = $sortMap[$sort];
+            return collect($flights)->sortBy($key, SORT_REGULAR, $direction === 'desc')->values()->toArray();
         }
-    })->values()->all();
-}
 
+        return $flights;
+    }
 
     /**
      * Get total flight count from response
