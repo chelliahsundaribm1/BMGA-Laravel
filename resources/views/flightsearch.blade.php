@@ -24,16 +24,6 @@
     <div class="content">
         <div class="container">
 
-            @if ($error)
-                <div class="alert alert-warning">
-                    {{ is_array($error) ? $error['errorMessage'] ?? 'Something went wrong' : $error }}
-                </div>
-            @endif
-
-
-
-
-
             <!-- Flight Search -->
             <div class="card">
                 <div class="card-body">
@@ -777,7 +767,7 @@
                         @endforeach
                     </div>
 
-                    <!-- Pagination -->
+                    {{-- <!-- Pagination -->
                     <nav class="pagination-nav">
                         <ul class="pagination justify-content-center">
                             <li class="page-item disabled">
@@ -797,7 +787,7 @@
                             </li>
                         </ul>
                     </nav>
-                    <!-- /Pagination -->
+                    <!-- /Pagination --> --}}
 
                 </div>
 

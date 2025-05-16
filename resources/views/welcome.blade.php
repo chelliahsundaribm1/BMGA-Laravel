@@ -502,6 +502,7 @@
                                                                     });
                                                                 });
                                                             </script>
+                                                           
                                                         </div>
                                                         <button type="submit"
                                                             class="btn btn-primary search-btn rounded">Search</button>
@@ -4477,6 +4478,34 @@
             updateTravelerSummary();
         });
     </script>
+     <script>
+        function convertToIsoString(dateStr) {
+            // Assumes input in dd-mm-yyyy
+            const [day, month, year] = dateStr.split('-');
+            const date = new Date(`${year}-${month}-${day}T00:00:00`);
+            return date.toISOString().split('.')[0]; // removes milliseconds
+        }
+
+        // Before form submission, format all relevant fields to ISO string
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const normalDeparture = document.getElementById('preferredDepartureTime');
+            const returnDeparture = document.getElementById('preferredReturnDepartureTime');
+            const multiDeparture = document.getElementById('multiPreferredDeparture');
+
+            if (normalDeparture && normalDeparture.value && !normalDeparture.value.includes('T')) {
+                normalDeparture.value = convertToIsoString(normalDeparture.value);
+            }
+
+            if (returnDeparture && returnDeparture.value && !returnDeparture.value.includes('T')) {
+                returnDeparture.value = convertToIsoString(returnDeparture.value);
+            }
+
+            if (multiDeparture && multiDeparture.value && !multiDeparture.value.includes('T')) {
+                multiDeparture.value = convertToIsoString(multiDeparture.value);
+            }
+        });
+    </script>
+
     {{-- 
 @include('preloaders.preflight', ['departureCode' => '---', 'arrivalCode' => '---'])
 <script>
