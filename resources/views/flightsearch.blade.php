@@ -451,7 +451,8 @@
                 <div class="mb-3">
                     <h5 class="mb-2">These airlines have the most flights</h5>
                 </div>
-                <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; ms-overflow-style: none;">
+                <div class="row"
+                    style="display: flex; flex-wrap: nowrap; gap: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; ms-overflow-style: none;">
                     @foreach ($airlineFlightCounts as $airline)
                         <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
                             <div class="d-flex align-items-center hotel-type-item mb-3">
@@ -468,248 +469,14 @@
                             </div>
                         </div>
                     @endforeach
-            </div>
+                </div>
             </div>
             <!-- /Flight Types -->
 
             <div class="row">
 
                 <!-- Sidebar -->
-                <div class="col-xl-3 col-lg-4 theiaStickySidebar">
-                    <div class="card filter-sidebar mb-4 mb-lg-0">
-                        <div class="card-header d-flex align-items-center justify-content-between">
-                            <h5>Filters</h5>
-                            <a href="javascript:void(0);" class="fs-14 link-primary">Reset</a>
-                        </div>
-                        <div class="card-body p-0">
-                            <form action="search.html">
-                                <div class="p-3 border-bottom">
-                                    <label class="form-label fs-16">Search by Airline Names</label>
-                                    <div class="input-icon">
-                                        <span class="input-icon-addon">
-                                            <i class="isax isax-search-normal"></i>
-                                        </span>
-                                        <input type="text" class="form-control" placeholder="Search by Airline Names">
-                                    </div>
-                                </div>
-                                <div class="accordion accordion-list">
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-populars" aria-expanded="true"
-                                                aria-controls="accordion-populars" role="button">
-                                                <i class="isax isax-ranking me-2 text-primary"></i>Popular
-                                            </div>
-                                        </div>
-                                        <div id="accordion-populars" class="accordion-collapse collapse show">
-                                            <div class="accordion-body pt-2">
-                                                <div
-                                                    class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="popular1"
-                                                        type="checkbox" id="popular1" checked="">
-                                                    <label class="form-check-label ms-2" for="popular1">
-                                                        Breakfast Included
-                                                    </label>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-popular" aria-expanded="true"
-                                                aria-controls="accordion-popular" role="button">
-                                                <i class="isax isax-coin me-2 text-primary"></i>Price Per Flights
-                                            </div>
-                                        </div>
-                                        <div id="accordion-popular" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="filter-range">
-                                                    <input type="text" id="range_03">
-                                                </div>
-                                                <div class="filter-range-amount">
-                                                    <p class="fs-14">Range : <span class="text-gray-9 fw-medium">$200 -
-                                                            $5695</span></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-flight" aria-expanded="true"
-                                                aria-controls="accordion-flight" role="button">
-                                                <i class="isax isax-airplane4 me-2 text-primary"></i>Airline Names
-                                            </div>
-                                        </div>
-                                        <div id="accordion-flight" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="more-content">
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="flight1"
-                                                            type="checkbox" id="flight1">
-                                                        <label class="form-check-label ms-2" for="flight1">
-                                                            American Airlines
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-                                                <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show
-                                                    More</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-amenity" aria-expanded="true"
-                                                aria-controls="accordion-amenity" role="button">
-                                                <i class="isax isax-candle me-2 text-primary"></i>Amenities
-                                            </div>
-                                        </div>
-                                        <div id="accordion-amenity" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="more-content">
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="amenity1"
-                                                            type="checkbox" id="amenity1">
-                                                        <label class="form-check-label ms-2" for="amenity1">
-                                                            Free Wifi
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-                                                <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show
-                                                    More</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-cabin" aria-expanded="true"
-                                                aria-controls="accordion-cabin" role="button">
-                                                <i class="isax isax-home-2 me-2 text-primary"></i>Cabin Class
-                                            </div>
-                                        </div>
-                                        <div id="accordion-cabin" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="more-content">
-                                                    <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                        <input class="form-check-input ms-0 mt-0" name="cabin1"
-                                                            type="checkbox" id="cabin1">
-                                                        <label class="form-check-label ms-2" for="cabin1">
-                                                            Economy
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-                                                <a href="javascript:void(0);" class="more-view fw-medium fs-14">Show
-                                                    More</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-meal" aria-expanded="true"
-                                                aria-controls="accordion-meal" role="button">
-                                                <i class="isax isax-reserve me-2 text-primary"></i>Meal plans available
-                                            </div>
-                                        </div>
-                                        <div id="accordion-meal" class="accordion-collapse collapse show">
-                                            <div class="accordion-body pt-2">
-                                                <div
-                                                    class="form-checkbox form-check form-check-inline d-inline-flex align-items-center mt-2 me-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="meals1"
-                                                        type="checkbox" id="meals1">
-                                                    <label class="form-check-label ms-2" for="meals1">
-                                                        All inclusive
-                                                    </label>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item border-bottom p-3">
-                                        <div class="accordion-header">
-                                            <div class="accordion-button p-0" data-bs-toggle="collapse"
-                                                data-bs-target="#accordion-brand" aria-expanded="true"
-                                                aria-controls="accordion-brand" role="button">
-                                                <i class="isax isax-discount-shape me-2 text-primary"></i>Reviews
-                                            </div>
-                                        </div>
-                                        <div id="accordion-brand" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="review1"
-                                                        type="checkbox" id="review1">
-                                                    <label class="form-check-label ms-2" for="review1">
-                                                        <span class="rating d-flex align-items-center">
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary"></i>
-                                                            <span class="ms-2">5 Star</span>
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="review2"
-                                                        type="checkbox" id="review2">
-                                                    <label class="form-check-label ms-2" for="review2">
-                                                        <span class="rating d-flex align-items-center">
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary"></i>
-                                                            <span class="ms-2">4 Star</span>
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="review3"
-                                                        type="checkbox" id="review3">
-                                                    <label class="form-check-label ms-2" for="review3">
-                                                        <span class="rating d-flex align-items-center">
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary"></i>
-                                                            <span class="ms-2">3 Star</span>
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-flex align-items-center ps-0 mb-2">
-                                                    <input class="form-check-input ms-0 mt-0" name="review4"
-                                                        type="checkbox" id="review4">
-                                                    <label class="form-check-label ms-2" for="review4">
-                                                        <span class="rating d-flex align-items-center">
-                                                            <i class="fas fa-star filled text-primary me-1"></i>
-                                                            <i class="fas fa-star filled text-primary"></i>
-                                                            <span class="ms-2">2 Star</span>
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-flex align-items-center ps-0 mb-0">
-                                                    <input class="form-check-input ms-0 mt-0" name="review5"
-                                                        type="checkbox" id="review5">
-                                                    <label class="form-check-label ms-2" for="review5">
-                                                        <span class="rating d-flex align-items-center">
-                                                            <i class="fas fa-star filled text-primary"></i>
-                                                            <span class="ms-2">1 Star</span>
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                @include('filters.flightfilter')
                 <!-- /Sidebar -->
 
                 <div class="col-xl-9 col-lg-8">
@@ -746,11 +513,11 @@
                                         @endforeach
 
                                         @foreach ([
-                                            'recommended' => 'Recommended',
-                                            'price_low_high' => 'Price: low to high',
-                                            'price_high_low' => 'Price: high to low',
-                                            'newest' => 'Newest (latest departure)',
-                                        ] as $key => $label)
+            'recommended' => 'Recommended',
+            'price_low_high' => 'Price: low to high',
+            'price_high_low' => 'Price: high to low',
+            'newest' => 'Newest (latest departure)',
+        ] as $key => $label)
                                             <div class="form-check d-flex align-items-center ps-0 mb-2">
                                                 <input class="form-check-input ms-0 mt-0" name="sort" type="radio"
                                                     id="sort_{{ $key }}" value="{{ $key }}"
@@ -825,7 +592,7 @@
                                         $flightNumber = ($airline['fC'] ?? '') . ' ' . ($airline['fN'] ?? '');
 
                                         // Determine if this is the cheapest flight
-                                        $isCheapest = $price === min(array_column($flights[$direction], 'pF')); 
+                                        $isCheapest = $price === min(array_column($flights[$direction], 'pF'));
 
                                     @endphp
 
@@ -836,12 +603,12 @@
                                                 <div class="img-slider image-slide owl-carousel nav-center">
                                                     @foreach ([9, 5, 7] as $imgNum)
                                                         <div class="slide-images">
-                                                            <a href="{{ route('flights.view', ['traceId' => $traceId, 'resultIndex' => $flight['rI']]) }}">
+                                                            <a
+                                                                href="{{ route('flights.view', ['traceId' => $traceId, 'resultIndex' => $flight['rI']]) }}">
                                                                 <img src="{{ asset("assets/img/flight/flight-0{$imgNum}.jpg") }}"
                                                                     class="img-fluid" alt="Flight image">
                                                             </a>
                                                         </div>
-
                                                     @endforeach
                                                 </div>
 
@@ -947,7 +714,8 @@
 
                                                 <!-- Flight Features -->
                                                 <div class="dropdown d-flex justify-content-center">
-                                                    <button class="btn btn-primary btn-sm dropdown-toggle d-flex align-items-center"
+                                                    <button
+                                                        class="btn btn-primary btn-sm dropdown-toggle d-flex align-items-center"
                                                         type="button" data-bs-toggle="dropdown" aria-expanded="false"
                                                         style="width: 100%;">
                                                         <i class="isax isax-info-circle me-2"></i>
@@ -988,13 +756,13 @@
                                                             {{ $seatsLeft > 0 ? "{$seatsLeft} Seats Left" : 'Sold Out' }}
                                                         </span>
                                                         <a href="javascript:void(0);" class="avatar avatar-sm">
-                                                            <img src="{{ asset('assets/img/users/user-08.jpg') }}"
+                                                            <img src="{{ asset('assets/seat.png') }}"
                                                                 class="rounded-circle" alt="Booking agent">
                                                         </a>
                                                     </div>
                                                 </div>
 
-                                                
+
 
                                             </div>
                                         </div>

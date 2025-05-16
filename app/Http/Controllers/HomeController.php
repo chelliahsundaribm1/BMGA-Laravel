@@ -66,66 +66,81 @@ class HomeController extends Controller
         return view('comingsoon');
     }
 
-public function flightSearch(Request $request, FlightService $flightService)
-{
-    $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
-    $airlineLogo = Airlines::all();
+    public function flightSearch(Request $request, FlightService $flightService)
+    {
+        // dd($request->all());
+        $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+        $airlineLogo = Airlines::all();
+        $cabinClasses = FlightClass::all();
 
-    $flights = [];
-    $error = null;
-    $totalFlightsCount = 0;
-    $airlineFlightCounts = [];
-    $traceId = null;
-    $resultIds = [];
+        $flights = [];
+        $error = null;
+        $totalFlightsCount = 0;
+        $airlineFlightCounts = [];
+        $traceId = null;
+        $resultIds = [];
+        $faresets = [];
+        // dd($request->all());
 
-    if ($request->has('origin') && $request->has('destination')) {
-        try {
-            $validated = $this->validateAndPrepareRequest($request);
-            $result = $flightService->searchFlights($validated);
+        if ($request->has('origin') && $request->has('destination')) {
+            try {
+                $validated = $this->validateAndPrepareRequest($request);
 
-            if ($result['status']) {
-                $response = $result['data']['response'];
-                $traceId = $response['traceId'] ?? Str::uuid()->toString();
+                $result = $flightService->searchFlights($validated);
 
-                // 🔁 Store only 'results' in cache
-                Cache::put("flight_results_{$traceId}", $response['results'], now()->addMinutes(30));
+                if ($result['status']) {
+                    $response = $result['data']['response'];
+                    $traceId = $response['traceId'] ?? Str::uuid()->toString();
 
-                $resultIds = collect($response['results']['outboundFlights'] ?? [])
-                    ->pluck('rI')
-                    ->merge(collect($response['results']['inboundFlights'] ?? [])->pluck('rI'))
-                    ->unique()
-                    ->values()
-                    ->toArray();
+                    // 🔁 Store only 'results' in cache
+                    Cache::put("flight_results_{$traceId}", $response['results'], now()->addMinutes(30));
 
-                $processed = $this->processFlightResults($response['results'] ?? [], $request, $request->get('sort'), $traceId);
+                    $resultIds = collect($response['results']['outboundFlights'] ?? [])
+                        ->pluck('rI')
+                        ->merge(collect($response['results']['inboundFlights'] ?? [])->pluck('rI'))
+                        ->unique()
+                        ->values()
+                        ->toArray();
 
-                $flights = $processed['flights'];
-                $totalFlightsCount = $this->getTotalFlightsCount($response);
-                $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
-            } else {
-                $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
+                    $processed = $this->processFlightResults($response['results'] ?? [], $request, $request->get('sort'), $traceId);
+
+                    $flights = $processed['flights'];
+                    $totalFlightsCount = $this->getTotalFlightsCount($response);
+                    $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
+                    $faresets = $this->getFaresets($response);
+                } else {
+                    $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
+                }
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
+            } catch (\Exception $e) {
+                $error = 'An error occurred while searching for flights';
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
-        } catch (\Exception $e) {
-            $error = 'An error occurred while searching for flights';
         }
+
+        return view('flightsearch', [
+            'airlines' => $airlines,
+            'flights' => $flights,
+            'error' => $error,
+            'airlinelogo' => $airlineLogo,
+            'totalFlightsCount' => $totalFlightsCount,
+            'airlineFlightCounts' => $airlineFlightCounts,
+            'sort' => $request->get('sort'),
+            'traceId' => $traceId,
+            'resultIds' => $resultIds,
+            'cabinClasses' => $cabinClasses,
+            'faresets' => $faresets,
+        ]);
     }
 
-    return view('flightsearch', [
-        'airlines' => $airlines,
-        'flights' => $flights,
-        'error' => $error,
-        'airlinelogo' => $airlineLogo,
-        'totalFlightsCount' => $totalFlightsCount,
-        'airlineFlightCounts' => $airlineFlightCounts,
-        'sort' => $request->get('sort'),
-        'traceId' => $traceId,
-        'resultIds' => $resultIds,
-    ]);
-}
-
-
+    private function getFaresets(array $response): array
+    {
+        return collect($response['results']['outboundFlights'] ?? [])
+            ->merge($response['results']['inboundFlights'] ?? [])
+            ->unique('rI')
+            ->values()
+            ->toArray();
+    }
     /**
      * Validate and prepare request data
      */
@@ -347,42 +362,42 @@ public function flightSearch(Request $request, FlightService $flightService)
             ->toArray();
     }
 
-    
-public function showFlightDetails(Request $request, FlightService $flightService)
-{
-    $request->validate([
-        'traceId' => 'required|string',
-        'resultIndex' => 'required|string',
-    ]);
 
-    $traceId = $request->get('traceId');
-    $resultIndex = $request->get('resultIndex');
+    public function showFlightDetails(Request $request, FlightService $flightService)
+    {
+        $request->validate([
+            'traceId' => 'required|string',
+            'resultIndex' => 'required|string',
+        ]);
 
-    // Fetch from cache instead of session
-    $searchResults = Cache::get("flight_results_{$traceId}");
+        $traceId = $request->get('traceId');
+        $resultIndex = $request->get('resultIndex');
 
-    if (!$searchResults) {
-        return back()->withErrors(['error' => 'Search session expired or not found.']);
+        // Fetch from cache instead of session
+        $searchResults = Cache::get("flight_results_{$traceId}");
+
+        if (!$searchResults) {
+            return back()->withErrors(['error' => 'Search session expired or not found.']);
+        }
+
+        $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
+
+        if (!$flight) {
+            return back()->withErrors(['error' => 'Flight not found in search results.']);
+        }
+
+        $fareResult = $flightService->getFareRules($traceId, $resultIndex);
+
+        if (!$fareResult['status']) {
+            return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
+        }
+        dd($flight);
+        return view('flightdetails', [
+            'flight' => $flight,
+            'traceId' => $traceId,
+            'fareRules' => $fareResult['data'], // HTML already
+        ]);
     }
-
-    $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
-
-    if (!$flight) {
-        return back()->withErrors(['error' => 'Flight not found in search results.']);
-    }
-
-    $fareResult = $flightService->getFareRules($traceId, $resultIndex);
-
-    if (!$fareResult['status']) {
-        return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
-    }
-dd($flight);
-    return view('flightdetails', [
-        'flight' => $flight,
-        'traceId' => $traceId,
-        'fareRules' => $fareResult['data'], // HTML already
-    ]);
-}
 
 
 
