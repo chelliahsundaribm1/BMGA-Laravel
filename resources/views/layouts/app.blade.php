@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/iconsax.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/slick/slick.css') }}">
 
     <!-- Plugins -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/tabler-icons/tabler-icons.css') }}">
@@ -32,6 +33,8 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/fancybox/jquery.fancybox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/owlcarousel/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/ion-rangeslider/css/ion.rangeSlider.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
+
 </head>
 
 <body>
@@ -82,6 +85,12 @@
     <script src="{{ asset('assets/js/jquery.counterup.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.waypoints.min.js') }}"></script>
     <script src="{{ asset('assets/js/cursor.js') }}"></script>
+
+   <!-- Slick Slider -->
+    <script src="{{ asset('assets/plugins/slick/slick.min.js') }}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{{ asset('assets/plugins/select2/js/select2.min.js') }}"></script>
 
     <!-- Apex Chart -->
     <script src="{{ asset('assets/plugins/apexchart/apexcharts.min.js') }}"></script>

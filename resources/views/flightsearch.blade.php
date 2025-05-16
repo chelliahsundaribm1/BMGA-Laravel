@@ -449,29 +449,26 @@
             <!-- Flight Types -->
             <div class="mb-2">
                 <div class="mb-3">
-                    <h5 class="mb-2">Choose type of Flights you are interested</h5>
+                    <h5 class="mb-2">These airlines have the most flights</h5>
                 </div>
-                <div class="row">
-                    <div class="row">
-                        @foreach ($airlineFlightCounts as $airline)
-                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                <div class="d-flex align-items-center hotel-type-item mb-3">
-                                    <div class="avatar avatar-lg">
-                                        {{-- Optional logo matching --}}
+                <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; ms-overflow-style: none;">
+                    @foreach ($airlineFlightCounts as $airline)
+                        <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                            <div class="d-flex align-items-center hotel-type-item mb-3">
+                                <div class="avatar avatar-lg">
+                                    {{-- Optional logo matching --}}
 
-                                        <img src="{{ asset('assets/airlines_icons/' . $airline['code'] . '.png') }}"
-                                            class="rounded-circle" alt="{{ $airline['name'] }}">
-                                    </div>
-                                    <div class="ms-2">
-                                        <h6 class="fs-16 fw-medium">{{ $airline['name'] }}</h6>
-                                        <p class="fs-14">{{ $airline['count'] }} Flights</p>
-                                    </div>
+                                    <img src="{{ asset('assets/airlines_icons/' . $airline['code'] . '.png') }}"
+                                        class="rounded-circle" alt="{{ $airline['name'] }}">
+                                </div>
+                                <div class="ms-2">
+                                    <h6 class="fs-16 fw-medium">{{ $airline['name'] }}</h6>
+                                    <p class="fs-14">{{ $airline['count'] }} Flights</p>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-
-                </div>
+                        </div>
+                    @endforeach
+            </div>
             </div>
             <!-- /Flight Types -->
 
@@ -720,6 +717,7 @@
                         @if ($totalFlightsCount)
                             <h6 class="mb-3">{{ $totalFlightsCount }} Flights Found on Your Search</h6>
                         @endif
+                        <!-- Sort By -->
                         <div class="d-flex align-items-center flex-wrap">
                             <div class="dropdown mb-3">
                                 <a href="javascript:void(0);" class="dropdown-toggle py-2" data-bs-toggle="dropdown"
@@ -827,7 +825,7 @@
                                         $flightNumber = ($airline['fC'] ?? '') . ' ' . ($airline['fN'] ?? '');
 
                                         // Determine if this is the cheapest flight
-                                        $isCheapest = $price == collect($flights)->min('pF');
+                                        $isCheapest = $price === min(array_column($flights[$direction], 'pF')); 
 
                                     @endphp
 
@@ -838,17 +836,14 @@
                                                 <div class="img-slider image-slide owl-carousel nav-center">
                                                     @foreach ([9, 5, 7] as $imgNum)
                                                         <div class="slide-images">
-                                                        <a href="{{ route('flights.view', ['traceId' => $traceId, 'resultIndex' => $flight['rI']]) }}">
-                                                            <img src="{{ asset("assets/img/flight/flight-0{$imgNum}.jpg") }}"
-                                                                class="img-fluid" alt="Flight image">
+                                                            <a href="{{ route('flights.view', ['traceId' => $traceId, 'resultIndex' => $flight['rI']]) }}">
+                                                                <img src="{{ asset("assets/img/flight/flight-0{$imgNum}.jpg") }}"
+                                                                    class="img-fluid" alt="Flight image">
+                                                            </a>
                                                         </div>
-                                                                                                    </a>
 
                                                     @endforeach
                                                 </div>
-                                           <strong>Trace ID:</strong> {{ $traceId }}
-                                           Result ID:  {{ $flight['rI'] }}
-
 
                                                 <div class="fav-item">
                                                     <div class="d-flex align-items-center">
@@ -912,7 +907,7 @@
                                                 </h5>
 
                                                 @if ($remarks)
-                                                    <p class="mb-0 text-muted">{{ $remarks }}</p>
+                                                    <marquee class="mb-0 text-muted">{{ $remarks }}</marquee>
                                                 @endif
 
                                                 <!-- Airline Details -->
@@ -951,68 +946,34 @@
 
 
                                                 <!-- Flight Features -->
-                                                <div class="date-info p-2 mb-3">
-                                                    <p class="d-flex align-items-center">
-                                                        <i class="isax isax-calendar-2 me-2"></i>
-                                                        Checked Baggage: {{ $baggageAllowance }}
-                                                    </p>
-                                                    <p class="d-flex align-items-center">
-                                                        <i class="isax isax-bag me-2"></i>
-                                                        Cabin Baggage: {{ $cabinBagAllowance }}
-                                                    </p>
-                                                    <p class="d-flex align-items-center">
-                                                        <i class="isax isax-refresh me-2"></i>
-                                                        Refundable: {{ $isRefundable ? 'Yes' : 'No' }}
-                                                    </p>
+                                                <div class="dropdown d-flex justify-content-center">
+                                                    <button class="btn btn-primary btn-sm dropdown-toggle d-flex align-items-center"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                        style="width: 100%;">
+                                                        <i class="isax isax-info-circle me-2"></i>
+                                                        Additional Details
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <p class="dropdown-item-text">
+                                                                <i class="isax isax-calendar-2 me-2"></i>
+                                                                Checked Baggage: {{ $baggageAllowance }}
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="dropdown-item-text">
+                                                                <i class="isax isax-bag me-2"></i>
+                                                                Cabin Baggage: {{ $cabinBagAllowance }}
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="dropdown-item-text">
+                                                                <i class="isax isax-refresh me-2"></i>
+                                                                Refundable: {{ $isRefundable ? 'Yes' : 'No' }}
+                                                            </p>
+                                                        </li>
+                                                    </ul>
                                                 </div>
-
-
-                                                @if ($flight['fareRules'])
-                                                <div class="border-top pt-3 mt-3">
-                                                    <div class="accordion accordion-flush"
-                                                        id="fareRulesAccordion-{{ $flight['rI'] }}">
-                                                        <div class="accordion-item border-0">
-                                                            <h6 class="accordion-header">
-                                                                <button
-                                                                    class="accordion-button collapsed bg-light p-2 shadow-none"
-                                                                    type="button" data-bs-toggle="collapse"
-                                                                    data-bs-target="#fareRulesCollapse-{{ $flight['rI'] }}"
-                                                                    aria-expanded="false">
-                                                                    <i class="isax isax-note-text me-2 text-primary"></i>
-                                                                    <span class="fw-medium fs-14">Fare Conditions</span>
-                                                                </button>
-                                                            </h6>
-                                                            <div id="fareRulesCollapse-{{ $flight['rI'] }}"
-                                                                class="accordion-collapse collapse"
-                                                                data-bs-parent="#fareRulesAccordion-{{ $flight['rI'] }}">
-                                                                <div class="accordion-body px-0 pt-3">
-                                                                    @forelse($flight['fareRules'] as $rule)
-                                                                        <div class="mb-3">
-                                                                            <div class="d-flex align-items-start">
-                                                                                <i
-                                                                                    class="isax isax-tick-circle text-success mt-1 me-2"></i>
-                                                                                <div>
-                                                                                    <h6 class="fw-bold mb-1">
-                                                                                        {{ $rule['title'] ?? 'Rule' }}
-                                                                                    </h6>
-                                                                                    <p class="small mb-0 text-muted">
-                                                                                        {!! nl2br(e($rule['description'] ?? 'Not specified')) !!}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    @empty
-                                                                        <div class="text-center py-2 text-muted">
-                                                                            <i class="isax isax-danger me-2"></i>
-                                                                            No fare rules available
-                                                                        </div>
-                                                                    @endforelse
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endif
 
                                                 <!-- Price and Booking -->
                                                 <div
@@ -1023,7 +984,7 @@
                                                     </h6>
                                                     <div class="d-flex align-items-center">
                                                         <span
-                                                            class="badge {{ $seatsLeft < 10 ? 'bg-danger' : 'bg-outline-success' }} fs-10 fw-medium me-2">
+                                                            class="badge {{ $seatsLeft > 10 ? 'bg-outline-success' : ($seatsLeft > 0 ? 'bg-warning' : 'bg-danger') }} fs-10 fw-medium me-2">
                                                             {{ $seatsLeft > 0 ? "{$seatsLeft} Seats Left" : 'Sold Out' }}
                                                         </span>
                                                         <a href="javascript:void(0);" class="avatar avatar-sm">

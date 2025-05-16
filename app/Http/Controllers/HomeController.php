@@ -9,7 +9,9 @@ use App\Services\FlightService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -64,64 +66,64 @@ class HomeController extends Controller
         return view('comingsoon');
     }
 
-    public function flightSearch(Request $request, FlightService $flightService)
-    {
-        $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
-        $airlineLogo = Airlines::all();
-        $flights = [];
-        $error = null;
-        $totalFlightsCount = 0;
-        $airlineFlightCounts = [];
-        $traceId = null;
-        $resultIds = [];
+public function flightSearch(Request $request, FlightService $flightService)
+{
+    $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+    $airlineLogo = Airlines::all();
 
-        if ($request->has('origin') && $request->has('destination')) {
-            try {
-                $validated = $this->validateAndPrepareRequest($request);
-                $result = $flightService->searchFlights($validated);
+    $flights = [];
+    $error = null;
+    $totalFlightsCount = 0;
+    $airlineFlightCounts = [];
+    $traceId = null;
+    $resultIds = [];
 
-           
-                if ($result['status']) {
-                    $response = $result['data']['response'];
-                    session()->put("flight_search_response_{$response['traceId']}", $response);
-                    $sortKey = $request->get('sort');
-                    $traceId = $response['traceId'] ?? null;
-                    $resultIds = collect($response['results']['outboundFlights'] ?? [])
-                            ->pluck('rI')
-                            ->merge(collect($response['results']['inboundFlights'] ?? [])->pluck('rI'))
-                            ->unique()
-                            ->values()
-                            ->toArray();
+    if ($request->has('origin') && $request->has('destination')) {
+        try {
+            $validated = $this->validateAndPrepareRequest($request);
+            $result = $flightService->searchFlights($validated);
 
-                    $processed = $this->processFlightResults($response['results'] ?? [], $request, $sortKey, $response['traceId'] ?? null);
+            if ($result['status']) {
+                $response = $result['data']['response'];
+                $traceId = $response['traceId'] ?? Str::uuid()->toString();
 
-                    $flights = $processed['flights'];
-                    $totalFlightsCount = $this->getTotalFlightsCount($response);
-                    $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
+                // 🔁 Store only 'results' in cache
+                Cache::put("flight_results_{$traceId}", $response['results'], now()->addMinutes(30));
 
-                } else {
-                    $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
-                }
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
-            } catch (\Exception $e) {
-                $error = 'An error occurred while searching for flights';
+                $resultIds = collect($response['results']['outboundFlights'] ?? [])
+                    ->pluck('rI')
+                    ->merge(collect($response['results']['inboundFlights'] ?? [])->pluck('rI'))
+                    ->unique()
+                    ->values()
+                    ->toArray();
+
+                $processed = $this->processFlightResults($response['results'] ?? [], $request, $request->get('sort'), $traceId);
+
+                $flights = $processed['flights'];
+                $totalFlightsCount = $this->getTotalFlightsCount($response);
+                $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
+            } else {
+                $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
+        } catch (\Exception $e) {
+            $error = 'An error occurred while searching for flights';
         }
-
-        return view('flightsearch', [
-            'airlines' => $airlines,
-            'flights' => $flights,
-            'error' => $error,
-            'airlinelogo' => $airlineLogo,
-            'totalFlightsCount' => $totalFlightsCount,
-            'airlineFlightCounts' => $airlineFlightCounts,
-            'sort' => $request->get('sort'),
-            'traceId' => $traceId,
-            'resultIds' => $resultIds,
-        ]);
     }
 
+    return view('flightsearch', [
+        'airlines' => $airlines,
+        'flights' => $flights,
+        'error' => $error,
+        'airlinelogo' => $airlineLogo,
+        'totalFlightsCount' => $totalFlightsCount,
+        'airlineFlightCounts' => $airlineFlightCounts,
+        'sort' => $request->get('sort'),
+        'traceId' => $traceId,
+        'resultIds' => $resultIds,
+    ]);
+}
 
 
     /**
@@ -346,7 +348,6 @@ class HomeController extends Controller
     }
 
     
-
 public function showFlightDetails(Request $request, FlightService $flightService)
 {
     $request->validate([
@@ -357,31 +358,29 @@ public function showFlightDetails(Request $request, FlightService $flightService
     $traceId = $request->get('traceId');
     $resultIndex = $request->get('resultIndex');
 
-    // Get search response from session
-    $searchData = session("flight_search_response_{$traceId}");
+    // Fetch from cache instead of session
+    $searchResults = Cache::get("flight_results_{$traceId}");
 
-    if (!$searchData || !isset($searchData['results'])) {
+    if (!$searchResults) {
         return back()->withErrors(['error' => 'Search session expired or not found.']);
     }
 
-    // Extract flight details from session-stored search results
-    $flight = $flightService->getFlightFromSearchResults($searchData['results'], $resultIndex);
+    $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
 
     if (!$flight) {
         return back()->withErrors(['error' => 'Flight not found in search results.']);
     }
 
-    // Fetch live fare rules
     $fareResult = $flightService->getFareRules($traceId, $resultIndex);
-// dd($fareResult);
+
     if (!$fareResult['status']) {
         return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
     }
-
+dd($flight);
     return view('flightdetails', [
         'flight' => $flight,
         'traceId' => $traceId,
-        'fareRules' => $fareResult['data'],
+        'fareRules' => $fareResult['data'], // HTML already
     ]);
 }
 
