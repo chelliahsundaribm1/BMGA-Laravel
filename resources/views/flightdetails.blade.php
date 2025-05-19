@@ -12,7 +12,7 @@
     <p><strong>Arrival:</strong> {{ \Carbon\Carbon::parse($flight['sg'][0]['ds']['aT'])->format('M d, Y h:i A') }}</p>
     <p><strong>Fare:</strong> {{ $flight['cr'] }} {{ number_format($flight['pF']) }}</p>
     <p><strong>Refundable:</strong> {{ $flight['iR'] ? 'Yes' : 'No' }}</p>
-
+ 
     @if (!empty($flight['fareRules']))
         <h4>Fare Rules</h4>
         @foreach ($flight['fareRules'] as $rule)

@@ -56,7 +56,7 @@
 }
 
 .arrival_city {
-    right: 1.5rem;
+    right: 0;
 }
 
 .plane {

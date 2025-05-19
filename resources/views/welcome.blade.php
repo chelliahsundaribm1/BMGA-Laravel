@@ -77,8 +77,7 @@
                                                     </ul>
                                                 </div>
                                             @endif
-                                            <form action="{{ route('flightsearch') }}" method="GET" class="flight-form"
-                                                id="flight-form">
+                                            <form action="{{ route('flightsearch') }}" method="GET" class="flight-form" id="flight-form">
                                                 @csrf
                                                 <input type="hidden" name="directFlight" value="true">
 
@@ -171,6 +170,34 @@
                                                             </div>
                                                             <input type="hidden" name="origin" class="from-code">
                                                             <input type="hidden" name="destination" class="to-code">
+                                                            <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const fromCode = document.querySelector(".from-code");
+    const toCode = document.querySelector(".to-code");
+    const searchBtn = document.querySelector(".search-btn");
+
+    function toggleSearchButton() {
+        if (fromCode.value.trim() !== "" && toCode.value.trim() !== "") {
+            searchBtn.disabled = false;
+        } else {
+            searchBtn.disabled = true;
+        }
+    }
+
+    // Monitor changes (if values are updated via JS/autocomplete)
+    const observer = new MutationObserver(toggleSearchButton);
+    observer.observe(fromCode, { attributes: true, attributeFilter: ['value'] });
+    observer.observe(toCode, { attributes: true, attributeFilter: ['value'] });
+
+    // Also bind to input events just in case values change through user action
+    fromCode.addEventListener("input", toggleSearchButton);
+    toCode.addEventListener("input", toggleSearchButton);
+
+    // Initial state
+    toggleSearchButton();
+});
+</script>
+
                                                             <!-- Departure and return dates -->
                                                             {{-- <div class="form-item">
                                                                 <label class="form-label fs-14 text-default mb-1">Departure</label>
@@ -389,8 +416,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <button type="submit"
-                                                            class="btn btn-primary search-btn rounded">Search</button>
+                                                        <button type="submit" class="btn btn-primary search-btn rounded" disabled>Search</button>
+
                                                     </div>
                                                 </div>
 
@@ -504,8 +531,7 @@
                                                             </script>
                                                            
                                                         </div>
-                                                        <button type="submit"
-                                                            class="btn btn-primary search-btn rounded">Search</button>
+                                                        <button type="submit" class="btn btn-primary search-btn rounded">Search</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -4506,44 +4532,33 @@
         });
     </script>
 
-    {{-- 
+    
 @include('preloaders.preflight', ['departureCode' => '---', 'arrivalCode' => '---'])
 <script>
-  function showFlightPreloader(originCode, destinationCode) {
-      // Update the departure and arrival codes in the preloader
-      document.querySelector('.departure_city').innerText = originCode || '---';
-      document.querySelector('.arrival_city').innerText = destinationCode || '---';
-      
-      // Show the preloader
-      document.querySelector('.flight-preloader').style.display = 'flex';
-  }
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('flight-form');
+    if (!form) return;
 
-  // Handle form submission
-  $('#flight-form').on('submit', function(e) {
-      e.preventDefault(); // Prevent default form submission if you're using AJAX
-      
-      // Get the values from your hidden inputs
-      const origin = $('.from-code').val();       // Gets departure airport code
-      const destination = $('.to-code').val();    // Gets arrival airport code
-      
-      // Show preloader with the codes
-      showFlightPreloader(origin, destination);
-      
-      // Continue with your form submission logic here
-      // this.submit(); // Uncomment if you want to proceed with form submission
-  });
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Stop default submit temporarily
 
-  // Swap functionality - update to maintain preloader codes
-  $('.way-icon').click(function() {
-      // Swap the visible inputs
-      swapAirportInputs('from', 'to');
-      
-      // Also swap the hidden code values
-      const fromCode = $('.from-code').val();
-      const toCode = $('.to-code').val();
-      $('.from-code').val(toCode);
-      $('.to-code').val(fromCode);
-  });
-</script> --}}
+        const originCode = document.querySelector('.from-code')?.value || '---';
+        const destinationCode = document.querySelector('.to-code')?.value || '---';
+
+        // Update preloader values
+        document.querySelector('.departure_city').innerText = originCode;
+        document.querySelector('.arrival_city').innerText = destinationCode;
+
+        // Show the preloader
+        const preloader = document.querySelector('.flight-preloader');
+        if (preloader) {
+            preloader.style.display = 'flex';
+        }
+
+        setTimeout(() => form.submit(), 100); 
+    });
+});
+</script>
+
 
 @endsection

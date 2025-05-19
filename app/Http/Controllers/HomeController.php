@@ -12,87 +12,61 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class HomeController extends Controller
 {
     public function index()
     {
-
-        $locations = Locations::all();
-        $airlines = Airlines::paginate(6);
-        $flightclass =  FlightClass::all();
-
-        return view('welcome', compact('locations', 'airlines', 'flightclass'));
+        return view('welcome', [
+            'locations' => Locations::all(),
+            'airlines' => Airlines::paginate(6),
+            'flightclass' => FlightClass::all(),
+        ]);
     }
 
-    public function aboutus()
-    {
-        return view('aboutus');
-    }
-
-    public function contact()
-    {
-        return view('contact');
-    }
+    public function aboutus() { return view('aboutus'); }
+    public function contact() { return view('contact'); }
+    public function hotel() { return view('hotel'); }
+    public function car() { return view('car'); }
+    public function cruise() { return view('cruise'); }
+    public function tour() { return view('tour'); }
+    public function comingsoon() { return view('comingsoon'); }
 
     public function flight()
     {
-        $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
+        $airlines = Airlines::withCount('flights')
+            ->orderByDesc('flights_count')
+            ->limit(24)
+            ->get();
+
         return view('flight', compact('airlines'));
-    }
-
-    public function hotel()
-    {
-        return view('hotel');
-    }
-
-    public function car()
-    {
-        return view('car');
-    }
-
-    public function cruise()
-    {
-        return view('cruise');
-    }
-
-    public function tour()
-    {
-        return view('tour');
-    }
-
-    public function comingsoon()
-    {
-        return view('comingsoon');
     }
 
     public function flightSearch(Request $request, FlightService $flightService)
     {
-        // dd($request->all());
         $airlines = Airlines::withCount('flights')->orderByDesc('flights_count')->limit(24)->get();
         $airlineLogo = Airlines::all();
         $cabinClasses = FlightClass::all();
+        $flightclass = FlightClass::all();
+
 
         $flights = [];
         $error = null;
-        $totalFlightsCount = 0;
-        $airlineFlightCounts = [];
         $traceId = null;
         $resultIds = [];
         $faresets = [];
-        // dd($request->all());
+        $totalFlightsCount = 0;
+        $airlineFlightCounts = [];
 
-        if ($request->has('origin') && $request->has('destination')) {
+        if ($request->has(['origin', 'destination'])) {
             try {
                 $validated = $this->validateAndPrepareRequest($request);
-
                 $result = $flightService->searchFlights($validated);
 
                 if ($result['status']) {
                     $response = $result['data']['response'];
                     $traceId = $response['traceId'] ?? Str::uuid()->toString();
-
-                    // 🔁 Store only 'results' in cache
                     Cache::put("flight_results_{$traceId}", $response['results'], now()->addMinutes(30));
 
                     $resultIds = collect($response['results']['outboundFlights'] ?? [])
@@ -103,7 +77,6 @@ class HomeController extends Controller
                         ->toArray();
 
                     $processed = $this->processFlightResults($response['results'] ?? [], $request, $request->get('sort'), $traceId);
-
                     $flights = $processed['flights'];
                     $totalFlightsCount = $this->getTotalFlightsCount($response);
                     $airlineFlightCounts = $this->getCombinedAirlineCounts($response);
@@ -112,25 +85,17 @@ class HomeController extends Controller
                     $error = $result['error']['errorMessage'] ?? 'Unknown error occurred';
                 }
             } catch (\Illuminate\Validation\ValidationException $e) {
-                $error = 'Invalid search parameters: ' . implode(', ', $e->errors());
+                $error = 'Invalid search parameters: ' . implode(', ', Arr::flatten($e->errors()));
             } catch (\Exception $e) {
                 $error = 'An error occurred while searching for flights';
             }
         }
-
-        return view('flightsearch', [
-            'airlines' => $airlines,
-            'flights' => $flights,
-            'error' => $error,
-            'airlinelogo' => $airlineLogo,
-            'totalFlightsCount' => $totalFlightsCount,
-            'airlineFlightCounts' => $airlineFlightCounts,
-            'sort' => $request->get('sort'),
-            'traceId' => $traceId,
-            'resultIds' => $resultIds,
-            'cabinClasses' => $cabinClasses,
-            'faresets' => $faresets,
-        ]);
+// dd(array_column($flights['outboundFlights'], 'sg'));
+dd($flights['outboundFlights'][210]);
+        return view('flightsearch', compact(
+            'airlines', 'flights', 'error', 'airlineLogo', 'totalFlightsCount',
+            'airlineFlightCounts', 'traceId', 'resultIds', 'cabinClasses', 'faresets','flightclass'
+        ))->with('sort', $request->get('sort'));
     }
 
     private function getFaresets(array $response): array
@@ -141,34 +106,21 @@ class HomeController extends Controller
             ->values()
             ->toArray();
     }
-    /**
-     * Validate and prepare request data
-     */
+
     private function validateAndPrepareRequest(Request $request): array
     {
         $data = $request->all();
 
-        // Type casting
-        $data['directFlight'] = isset($data['directFlight'])
-            ? filter_var($data['directFlight'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        $data['directFlight'] = filter_var($data['directFlight'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-        $numericFields = [
-            'adultCount' => 1,
-            'childCount' => 0,
-            'infantCount' => 0,
-            'journeyType' => 1,
-            'flightCabinClass' => 1
-        ];
-
-        foreach ($numericFields as $field => $default) {
-            $data[$field] = isset($data[$field]) ? (int) $data[$field] : $default;
+        foreach ([
+            'adultCount' => 1, 'childCount' => 0, 'infantCount' => 0,
+            'journeyType' => 1, 'flightCabinClass' => 1
+        ] as $field => $default) {
+            $data[$field] = (int)($data[$field] ?? $default);
         }
 
-        // Date formatting
-        $departureField = ($data['journeyType'] == 2)
-            ? 'multiPreferredDeparture'
-            : 'preferredDepartureTime';
+        $departureField = $data['journeyType'] == 2 ? 'multiPreferredDeparture' : 'preferredDepartureTime';
 
         foreach ([$departureField, 'preferredReturnDepartureTime'] as $key) {
             if (!empty($data[$key]) && !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $data[$key])) {
@@ -193,127 +145,74 @@ class HomeController extends Controller
         ]);
     }
 
-    /**
-     * Process flight results with filtering and sorting
-     */
     private function processFlightResults(array $results, Request $request, ?string $sortKey, ?string $traceId): array
     {
         return [
             'flights' => [
-                'outboundFlights' => $this->appendFareRules(
-                    $this->sortFlights($this->filterFlights($results['outboundFlights'] ?? [], $request), $sortKey),
-                    $traceId
-                ),
-                'inboundFlights' => $this->appendFareRules(
-                    $this->sortFlights($this->filterFlights($results['inboundFlights'] ?? [], $request), $sortKey),
-                    $traceId
-                ),
+                'outboundFlights' => $this->appendFareRules($this->sortFlights($this->filterFlights($results['outboundFlights'] ?? [], $request), $sortKey), $traceId),
+                'inboundFlights' => $this->appendFareRules($this->sortFlights($this->filterFlights($results['inboundFlights'] ?? [], $request), $sortKey), $traceId),
             ],
         ];
     }
-
-
 
     private function appendFareRules(array $flights, string $traceId): array
     {
         return collect($flights)->map(function ($flight) use ($traceId) {
             try {
-                if (empty($flight['fareRules']) && $traceId && !empty($flight['resultIndex'])) {
-                    $fareRulesResponse = Http::timeout(3)
-                        ->retry(2, 100)
-                        ->post(config('services.flight.fare_rules_endpoint'), [
-                            'traceId' => $traceId,
-                            'resultIndex' => $flight['resultIndex']
-                        ]);
+                if (empty($flight['fareRules']) && !empty($flight['resultIndex'])) {
+                    $response = Http::timeout(3)->retry(2, 100)->post(
+                        config('services.flight.fare_rules_endpoint'),
+                        ['traceId' => $traceId, 'resultIndex' => $flight['resultIndex']]
+                    );
 
-                    if ($fareRulesResponse->successful()) {
-                        $flight['fareRules'] = $fareRulesResponse->json('results.0.fareRuleDetail', []);
+                    if ($response->successful()) {
+                        $flight['fareRules'] = $response->json('results.0.fareRuleDetail', []);
                     }
                 }
             } catch (\Exception $e) {
-                // Log error if needed
                 $flight['fareRules'] = [];
             }
-
-            // Ensure we always have an array
-            $flight['fareRules'] = $flight['fareRules'] ?? [];
-
             return $flight;
         })->toArray();
     }
 
-    /**
-     * Filter flights based on request parameters
-     */
     private function filterFlights(array $flights, Request $request): array
     {
         return collect($flights)->filter(function ($flight) use ($request) {
-            if (empty($flight['sg'])) {
-                return false;
-            }
+            if (empty($flight['sg'])) return false;
 
             $segment = $flight['sg'][0];
+            $stops = (int)$request->input('stops');
+            $actualStops = count($flight['sg']) - 1;
 
-            // Stop filter
             if ($request->filled('stops')) {
-                $stops = (int) $request->input('stops');
-                $actualStops = count($flight['sg']) - 1;
-
-                if ($stops === 2) {
-                    if ($actualStops < 2) return false;
-                } elseif ($actualStops !== $stops) {
-                    return false;
-                }
+                if ($stops === 2 && $actualStops < 2) return false;
+                if ($stops !== 2 && $actualStops !== $stops) return false;
             }
 
-            // Airline filter
-            if (
-                $request->filled('airlines') &&
-                !in_array($segment['al']['alC'], (array) $request->input('airlines'))
-            ) {
-                return false;
-            }
+            if ($request->filled('airlines') && !in_array($segment['al']['alC'], (array)$request->input('airlines'))) return false;
+            if ($request->filled('refundable') && $flight['iR'] !== ($request->input('refundable') == 'true')) return false;
+            if ($request->filled('fareType') && ($flight['fareIdentifier']['code'] ?? '') !== $request->input('fareType')) return false;
 
-            // Refundable filter
-            if (
-                $request->filled('refundable') &&
-                $flight['iR'] !== ($request->input('refundable') == 'true')
-            ) {
-                return false;
-            }
-
-            // Fare type filter
-            if (
-                $request->filled('fareType') &&
-                $flight['fareIdentifier']['code'] !== $request->input('fareType')
-            ) {
-                return false;
-            }
-
-            // Price range filter
             $price = $flight['pF'] ?? 0;
-            if ($request->filled('price_min') && $price < (int) $request->input('price_min')) return false;
-            if ($request->filled('price_max') && $price > (int) $request->input('price_max')) return false;
+            if ($request->filled('price_min') && $price < (int)$request->input('price_min')) return false;
+            if ($request->filled('price_max') && $price > (int)$request->input('price_max')) return false;
 
-            // Time filters
             $departureTime = Carbon::parse($segment['or']['dT']);
             $arrivalTime = Carbon::parse($segment['ds']['aT']);
 
-            if ($request->filled('dep_from') && $departureTime->hour < (int) $request->input('dep_from')) return false;
-            if ($request->filled('dep_to') && $departureTime->hour > (int) $request->input('dep_to')) return false;
-            if ($request->filled('arr_from') && $arrivalTime->hour < (int) $request->input('arr_from')) return false;
-            if ($request->filled('arr_to') && $arrivalTime->hour > (int) $request->input('arr_to')) return false;
+            if ($request->filled('dep_from') && $departureTime->hour < (int)$request->input('dep_from')) return false;
+            if ($request->filled('dep_to') && $departureTime->hour > (int)$request->input('dep_to')) return false;
+            if ($request->filled('arr_from') && $arrivalTime->hour < (int)$request->input('arr_from')) return false;
+            if ($request->filled('arr_to') && $arrivalTime->hour > (int)$request->input('arr_to')) return false;
 
             return true;
         })->values()->toArray();
     }
 
-    /**
-     * Sort flights based on criteria
-     */
     private function sortFlights(array $flights, ?string $sort): array
     {
-        $sortMap = [
+        $map = [
             'price_low_high' => ['pF', 'asc'],
             'price_high_low' => ['pF', 'desc'],
             'duration_short' => ['sg.0.dr', 'asc'],
@@ -324,26 +223,17 @@ class HomeController extends Controller
             'late_arrival' => ['sg.0.ds.aT', 'desc'],
         ];
 
-        if (isset($sortMap[$sort])) {
-            [$key, $direction] = $sortMap[$sort];
-            return collect($flights)->sortBy($key, SORT_REGULAR, $direction === 'desc')->values()->toArray();
-        }
+        if (!isset($map[$sort])) return $flights;
 
-        return $flights;
+        [$key, $dir] = $map[$sort];
+        return collect($flights)->sortBy($key, SORT_REGULAR, $dir === 'desc')->values()->toArray();
     }
 
-    /**
-     * Get total flight count from response
-     */
     private function getTotalFlightsCount(array $response): int
     {
-        return count($response['results']['outboundFlights'] ?? []) +
-            count($response['results']['inboundFlights'] ?? []);
+        return count($response['results']['outboundFlights'] ?? []) + count($response['results']['inboundFlights'] ?? []);
     }
 
-    /**
-     * Combine airline counts from inbound/outbound
-     */
     private function getCombinedAirlineCounts(array $response): array
     {
         $outbound = collect($response['facets']['airlines']['outbound'] ?? []);
@@ -351,17 +241,12 @@ class HomeController extends Controller
 
         return $outbound->merge($inbound)
             ->groupBy('code')
-            ->map(function ($flights) {
-                return [
-                    'code' => $flights[0]['code'],
-                    'name' => $flights[0]['name'],
-                    'count' => $flights->sum('count'),
-                ];
-            })
-            ->values()
-            ->toArray();
+            ->map(fn($flights) => [
+                'code' => $flights[0]['code'],
+                'name' => $flights[0]['name'],
+                'count' => $flights->sum('count'),
+            ])->values()->toArray();
     }
-
 
     public function showFlightDetails(Request $request, FlightService $flightService)
     {
@@ -370,51 +255,35 @@ class HomeController extends Controller
             'resultIndex' => 'required|string',
         ]);
 
-        $traceId = $request->get('traceId');
-        $resultIndex = $request->get('resultIndex');
-
-        // Fetch from cache instead of session
+        $traceId = $request->traceId;
+        $resultIndex = $request->resultIndex;
         $searchResults = Cache::get("flight_results_{$traceId}");
 
-        if (!$searchResults) {
-            return back()->withErrors(['error' => 'Search session expired or not found.']);
-        }
+        if (!$searchResults) return back()->withErrors(['error' => 'Search session expired or not found.']);
 
         $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
-
-        if (!$flight) {
-            return back()->withErrors(['error' => 'Flight not found in search results.']);
-        }
+        if (!$flight) return back()->withErrors(['error' => 'Flight not found in search results.']);
 
         $fareResult = $flightService->getFareRules($traceId, $resultIndex);
+        if (!$fareResult['status']) return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
 
-        if (!$fareResult['status']) {
-            return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
-        }
-        dd($flight);
         return view('flightdetails', [
             'flight' => $flight,
             'traceId' => $traceId,
-            'fareRules' => $fareResult['data'], // HTML already
+            'fareRules' => $fareResult['data'],
         ]);
     }
-
-
-
 
     public function searchLocations(Request $request)
     {
         $searchTerm = $request->input('search');
+        if (empty($searchTerm)) return response()->json([]);
 
-        if (empty($searchTerm)) {
-            return response()->json([]);
-        }
-
-        $locations = Locations::where('city', 'like', '%' . $searchTerm . '%')
-            ->orWhere('country', 'like', '%' . $searchTerm . '%')
-            ->take(10)
-            ->get(['id', 'city', 'country']);
-
-        return response()->json($locations);
+        return response()->json(
+            Locations::where('city', 'like', "%{$searchTerm}%")
+                ->orWhere('country', 'like', "%{$searchTerm}%")
+                ->take(10)
+                ->get(['id', 'city', 'country'])
+        );
     }
 }
