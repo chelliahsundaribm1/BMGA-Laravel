@@ -171,32 +171,32 @@
                                                             <input type="hidden" name="origin" class="from-code">
                                                             <input type="hidden" name="destination" class="to-code">
                                                             <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const fromCode = document.querySelector(".from-code");
-    const toCode = document.querySelector(".to-code");
-    const searchBtn = document.querySelector(".search-btn");
+                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                const fromCode = document.querySelector(".from-code");
+                                                                const toCode = document.querySelector(".to-code");
+                                                                const searchBtn = document.querySelector(".search-btn");
 
-    function toggleSearchButton() {
-        if (fromCode.value.trim() !== "" && toCode.value.trim() !== "") {
-            searchBtn.disabled = false;
-        } else {
-            searchBtn.disabled = true;
-        }
-    }
+                                                                function toggleSearchButton() {
+                                                                    if (fromCode.value.trim() !== "" && toCode.value.trim() !== "") {
+                                                                        searchBtn.disabled = false;
+                                                                    } else {
+                                                                        searchBtn.disabled = true;
+                                                                    }
+                                                                }
 
-    // Monitor changes (if values are updated via JS/autocomplete)
-    const observer = new MutationObserver(toggleSearchButton);
-    observer.observe(fromCode, { attributes: true, attributeFilter: ['value'] });
-    observer.observe(toCode, { attributes: true, attributeFilter: ['value'] });
+                                                                // Monitor changes (if values are updated via JS/autocomplete)
+                                                                const observer = new MutationObserver(toggleSearchButton);
+                                                                observer.observe(fromCode, { attributes: true, attributeFilter: ['value'] });
+                                                                observer.observe(toCode, { attributes: true, attributeFilter: ['value'] });
 
-    // Also bind to input events just in case values change through user action
-    fromCode.addEventListener("input", toggleSearchButton);
-    toCode.addEventListener("input", toggleSearchButton);
+                                                                // Also bind to input events just in case values change through user action
+                                                                fromCode.addEventListener("input", toggleSearchButton);
+                                                                toCode.addEventListener("input", toggleSearchButton);
 
-    // Initial state
-    toggleSearchButton();
-});
-</script>
+                                                                // Initial state
+                                                                toggleSearchButton();
+                                                            });
+                                                            </script>
 
                                                             <!-- Departure and return dates -->
                                                             {{-- <div class="form-item">
