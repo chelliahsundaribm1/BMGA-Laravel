@@ -91,7 +91,7 @@ class HomeController extends Controller
             }
         }
 // dd(array_column($flights['outboundFlights'], 'sg'));
-dd($flights['outboundFlights'][210]);
+// dd($flights['outboundFlights'][210]);
         return view('flightsearch', compact(
             'airlines', 'flights', 'error', 'airlineLogo', 'totalFlightsCount',
             'airlineFlightCounts', 'traceId', 'resultIds', 'cabinClasses', 'faresets','flightclass'
