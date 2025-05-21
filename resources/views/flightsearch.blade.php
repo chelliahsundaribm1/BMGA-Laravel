@@ -551,47 +551,55 @@
                             @if (!empty($flights[$direction]))
                                 @foreach ($flights[$direction] as $flight)
                                     @php
-                                        // Extract flight data
-                                        $segment = $flight['sg'][0] ?? [];
-                                        $airline = $segment['al'] ?? [];
-                                        $origin = $segment['or'] ?? [];
-                                        $destination = $segment['ds'] ?? [];
+                                        $segments = $flight['sg'] ?? [];
+                                        $firstSegment = $segments[0] ?? [];
+                                        $lastSegment = end($segments);
+                                        $airline = $firstSegment['al'] ?? [];
+                                        $origin = $firstSegment['or'] ?? [];
+                                        $destination = $lastSegment['ds'] ?? [];
 
-                                        // Format times
                                         $departureTime = isset($origin['dT'])
                                             ? \Carbon\Carbon::parse($origin['dT'])->format('M d, Y h:i A')
                                             : '';
                                         $arrivalTime = isset($destination['aT'])
                                             ? \Carbon\Carbon::parse($destination['aT'])->format('M d, Y h:i A')
                                             : '';
+                                        $departureDateShort = isset($origin['dT'])
+                                            ? \Carbon\Carbon::parse($origin['dT'])->format('M d, Y')
+                                            : '';
+                                        $arrivalDateShort = isset($destination['aT'])
+                                            ? \Carbon\Carbon::parse($destination['aT'])->format('M d, Y')
+                                            : '';
 
-                                        // Pricing and availability
-                                        $price = $flight['pF'] ?? 0;
+                                        $price = $flight['fF'] ?? 0;
                                         $formattedPrice = number_format($price);
-                                        $currency = $flight['cr'] ?? 'N/A';
-                                        $seatsLeft = $segment['nOSA'] ?? 0;
+                                        $currency = $flight['cr'] ?? 'INR';
+                                        $seatsLeft = $firstSegment['nOSA'] ?? 0;
 
-                                        // Flight duration
-                                        $durationMinutes = $segment['dr'] ?? 0;
+                                        $durationMinutes = $firstSegment['dr'] ?? 0;
                                         $durationHours = floor($durationMinutes / 60);
                                         $durationMinutesRemainder = $durationMinutes % 60;
                                         $durationFormatted = "{$durationHours}h {$durationMinutesRemainder}m";
 
-                                        // Flight details
-                                        $stopsCount = $segment['sC'] ?? 0;
+                                        $stopsCount = count($segments) - 1;
                                         $isNonStop = $stopsCount === 0;
+                                        $stopCity = !$isNonStop ? $segments[0]['ds']['cN'] ?? '' : '';
+                                        $stopDetailText = $isNonStop ? 'Non-stop' : "{$stopsCount}-stop at {$stopCity}";
+
                                         $isRefundable = $flight['iR'] ?? false;
-                                        $baggageAllowance = $segment['bg'] ?? 'N/A';
-                                        $cabinBagAllowance = $segment['cBg'] ?? 'N/A';
+                                        $baggageAllowance = $firstSegment['bg'] ?? 'N/A';
+                                        $cabinBagAllowance = $firstSegment['cBg'] ?? 'N/A';
                                         $remarks = $flight['aR'] ?? null;
 
-                                        // Airline info
                                         $airlineName = $airline['alN'] ?? 'Unknown';
                                         $airlineCode = $airline['alC'] ?? '';
-                                        $flightNumber = ($airline['fC'] ?? '') . ' ' . ($airline['fN'] ?? '');
+                                        $flightNumber = $airlineName . ' ' . ($airline['fN'] ?? '');
 
-                                        // Determine if this is the cheapest flight
-                                        $isCheapest = $price === min(array_column($flights[$direction], 'pF'));
+                                        $cheapestPrice = min(array_column($flights[$direction], 'fF'));
+                                        $isCheapest = $price === $cheapestPrice;
+
+                                        $fareType = $flight['fareIdentifier']['name'] ?? '';
+                                        $fareColor = $flight['fareIdentifier']['colorCode'] ?? '#0077CE';
 
                                     @endphp
 
@@ -655,8 +663,9 @@
                                                         <span class="text-muted small">{{ $durationFormatted }}</span>
                                                         <div class="border-top w-100 my-1"></div>
                                                         <span class="badge bg-light text-dark small">
-                                                            {{ $isNonStop ? 'Non-stop' : $stopsCount . ' Stop' . ($stopsCount > 1 ? 's' : '') }}
+                                                            {{ $stopDetailText }}
                                                         </span>
+
                                                     </div>
 
                                                     <div class="d-flex flex-column text-center">
@@ -668,46 +677,102 @@
                                                 <!-- Airline Info -->
                                                 <h5 class="text-truncate mb-1">
                                                     <a href="flight-details.html">
-                                                        {{ $airlineName }} {{ $flightNumber }}
+                                                        {{ $flightNumber }}
                                                     </a>
                                                 </h5>
-
-                                                @if ($remarks)
-                                                    <marquee class="mb-0 text-muted">{{ $remarks }}</marquee>
+                                                @if ($fareType)
+                                                    <span class="badge me-1"
+                                                        style="background-color: {{ $fareColor }}; color: #fff;">
+                                                        {{ $fareType }}
+                                                    </span>
                                                 @endif
 
+
                                                 <!-- Airline Details -->
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <span class="avatar avatar-sm me-2">
-                                                        <img src="{{ asset("assets/airlines_icons/{$airlineCode}.png") }}"
-                                                            class="rounded-circle" alt="{{ $airlineName }} icon"
-                                                            onerror="this.src='{{ asset('assets/img/default-airline.png') }}'">
-                                                    </span>
-                                                    <p class="fs-14 mb-0 me-2">{{ $airlineName }}</p>
-                                                    <p class="fs-14 mb-0">
-                                                        <i class="ti ti-point-filled text-primary me-2"></i>
-                                                        <a href="javascript:void(0);" data-bs-toggle="collapse"
-                                                            data-bs-target="#stopDetail-{{ $flight['rI'] }}">
-                                                            {{ $isNonStop ? 'Non-stop' : "{$stopsCount} Stop(s)" }}
-                                                        </a>
-                                                        @if (!$isNonStop)
-                                                            <div class="collapse mb-2"
-                                                                id="stopDetail-{{ $flight['rI'] }}">
-                                                                <div class="p-2 border rounded bg-light">
-                                                                    <strong>Stopover Details:</strong>
-                                                                    <p class="mb-1">
-                                                                        <strong>Point:</strong>
-                                                                        {{ $segment['sP'] ?? 'N/A' }}
-                                                                    </p>
-                                                                    <p class="mb-0">
-                                                                        <strong>Duration:</strong>
-                                                                        {{ $segment['sD'] ?? 0 }} mins
-                                                                    </p>
-                                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <span class="avatar avatar-sm me-2">
+                                                            <img src="{{ asset("assets/airlines_icons/{$airlineCode}.png") }}"
+                                                                class="rounded-circle" alt="{{ $airlineName }} icon"
+                                                                onerror="this.src='{{ asset('assets/img/default-airline.png') }}'">
+                                                        </span>
+                                                        <p class="fs-14 mb-0 me-2 fw-medium text-dark">{{ $airlineName }}
+                                                        </p>
+                                                        <span class="badge bg-light text-dark small">
+                                                            {{ $isNonStop ? 'Non-stop' : "{$stopsCount} Stop" . ($stopsCount > 1 ? 's' : '') }}
+                                                        </span>
+                                                    </div>
+
+                                                    @if (!$isNonStop)
+                                                        <div class="text-end mt-1">
+                                                            <a href="javascript:void(0);" data-bs-toggle="collapse"
+                                                                data-bs-target="#stopDetail-{{ $flight['rI'] }}"
+                                                                class="small text-decoration-underline text-primary">
+                                                                View Stopover Details
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="collapse mt-2" id="stopDetail-{{ $flight['rI'] }}">
+                                                            <div class="p-3 border rounded bg-light">
+                                                                <strong class="d-block mb-2 text-primary">Stopover
+                                                                    Details</strong>
+                                                                <ul class="mb-0 ps-3">
+                                                                    @foreach ($segments as $index => $seg)
+                                                                        @if ($index < count($segments) - 1)
+                                                                            @php
+                                                                                $arrival = $seg['ds'] ?? [];
+                                                                                $nextSeg = $segments[$index + 1];
+                                                                                $groundTime = $nextSeg['gT'] ?? 0;
+
+                                                                                $stopCity =
+                                                                                    $arrival['cN'] ?? 'Unknown City';
+                                                                                $stopCountry = $arrival['cnN'] ?? '';
+                                                                                $airportName = $arrival['aN'] ?? '';
+                                                                                $terminal = $arrival['tr'] ?? 'N/A';
+
+                                                                                $arrivalTime = isset($arrival['aT'])
+                                                                                    ? \Carbon\Carbon::parse(
+                                                                                        $arrival['aT'],
+                                                                                    )->format('M d, Y h:i A')
+                                                                                    : 'N/A';
+                                                                                $departureTime = isset(
+                                                                                    $nextSeg['or']['dT'],
+                                                                                )
+                                                                                    ? \Carbon\Carbon::parse(
+                                                                                        $nextSeg['or']['dT'],
+                                                                                    )->format('M d, Y h:i A')
+                                                                                    : 'N/A';
+
+                                                                                $airlineNext =
+                                                                                    $nextSeg['al']['alN'] ??
+                                                                                    'Unknown Airline';
+                                                                            @endphp
+
+                                                                            <li class="mb-2">
+                                                                                <strong>Stop {{ $index + 1 }}:</strong>
+                                                                                {{ $stopCity }},
+                                                                                {{ $stopCountry }}<br>
+                                                                                <strong>Airport:</strong>
+                                                                                {{ $airportName }} (Terminal
+                                                                                {{ $terminal }})<br>
+                                                                                <strong>Arrival:</strong>
+                                                                                {{ $arrivalTime }}<br>
+                                                                                <strong>Departure:</strong>
+                                                                                {{ $departureTime }}<br>
+                                                                                <strong>Layover Duration:</strong>
+                                                                                {{ floor($groundTime / 60) }}h
+                                                                                {{ $groundTime % 60 }}m<br>
+                                                                                <strong>Next Flight Operated by:</strong>
+                                                                                {{ $airlineNext }}
+                                                                            </li>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </ul>
                                                             </div>
-                                                        @endif
-                                                    </p>
+                                                        </div>
+                                                    @endif
                                                 </div>
+
 
 
 
@@ -746,9 +811,12 @@
                                                 <div
                                                     class="d-flex align-items-center justify-content-between border-top pt-3">
                                                     <h6 class="text-primary">
-                                                        <span class="fs-14 fw-normal text-default">From </span>
+                                                        <span class="fs-14 fw-normal text-default">From</span>
                                                         {{ $currency }} {{ $formattedPrice }}
+                                                        <small class="text-muted">({{ $departureDateShort }} -
+                                                            {{ $arrivalDateShort }})</small>
                                                     </h6>
+
                                                     <div class="d-flex align-items-center">
                                                         <span
                                                             class="badge {{ $seatsLeft > 10 ? 'bg-outline-success' : ($seatsLeft > 0 ? 'bg-warning' : 'bg-danger') }} fs-10 fw-medium me-2">

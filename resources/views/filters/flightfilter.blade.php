@@ -101,7 +101,7 @@
                              </div>
 
                              <!-- Departure Time -->
-                             {{-- <div class="accordion-item border-bottom p-3">
+                             <div class="accordion-item border-bottom p-3">
                                  <div class="accordion-header">
                                  
                                      <div class="accordion-button p-0" data-bs-toggle="collapse"
@@ -115,7 +115,7 @@
                                              id="departure_time">
                                      </div>
                                  </div>
-                             </div> --}}
+                             </div>
 
                              <!-- Cabin -->
 
