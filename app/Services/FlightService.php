@@ -68,7 +68,6 @@ class FlightService
         return $flights->firstWhere('rI', $resultIndex);
     }
 
-    // app/Services/FlightService.php
 
 public function getFareRules(string $traceId, string $resultIndex): array
 {
@@ -103,6 +102,43 @@ public function getFareRules(string $traceId, string $resultIndex): array
     return [
         'status' => false,
         'error' => $response->json('errorMessage') ?? 'Failed to fetch fare rules',
+    ];
+}
+
+public function createItinerary(array $items, string $traceId): array
+{
+    $token = $this->authService->getAccessToken();
+
+    if (!$token) {
+        return [
+            'status' => false,
+            'error' => 'Travclan access token not found.',
+        ];
+    }
+
+    $payload = [
+        'traceId' => $traceId,
+        'items' => $items,
+    ];
+// dd($token, $payload);
+    $url = config('travclan.create_itinerary_url');
+
+    $response = Http::withHeaders($this->travclanHeaders($token))
+        ->timeout(20)
+        ->retry(2, 500)
+        ->post($url, $payload);
+
+        // dd($response);
+    if ($response->successful()) {
+        return [
+            'status' => true,
+            'data' => $response->json('results'),
+        ];
+    }
+
+    return [
+        'status' => false,
+        'error' => $response->json('errorMessage') ?? 'Failed to create itinerary.',
     ];
 }
 

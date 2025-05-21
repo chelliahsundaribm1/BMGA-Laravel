@@ -248,31 +248,47 @@ class HomeController extends Controller
             ])->values()->toArray();
     }
 
-    public function showFlightDetails(Request $request, FlightService $flightService)
-    {
-        $request->validate([
-            'traceId' => 'required|string',
-            'resultIndex' => 'required|string',
-        ]);
+public function showFlightDetails(Request $request, FlightService $flightService)
+{
+    $request->validate([
+        'traceId' => 'required|string',
+        'resultIndex' => 'required|string',
+    ]);
 
-        $traceId = $request->traceId;
-        $resultIndex = $request->resultIndex;
-        $searchResults = Cache::get("flight_results_{$traceId}");
+    $traceId = $request->traceId;
+    $resultIndex = $request->resultIndex;
+    $searchResults = Cache::get("flight_results_{$traceId}");
 
-        if (!$searchResults) return back()->withErrors(['error' => 'Search session expired or not found.']);
-
-        $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
-        if (!$flight) return back()->withErrors(['error' => 'Flight not found in search results.']);
-
-        $fareResult = $flightService->getFareRules($traceId, $resultIndex);
-        if (!$fareResult['status']) return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
-
-        return view('flightdetails', [
-            'flight' => $flight,
-            'traceId' => $traceId,
-            'fareRules' => $fareResult['data'],
-        ]);
+    if (!$searchResults) {
+        return back()->withErrors(['error' => 'Search session expired or not found.']);
     }
+
+    $flight = $flightService->getFlightFromSearchResults($searchResults, $resultIndex);
+    if (!$flight) {
+        return back()->withErrors(['error' => 'Flight not found in search results.']);
+    }
+
+    $fareResult = $flightService->getFareRules($traceId, $resultIndex);
+    if (!$fareResult['status']) {
+        return back()->withErrors(['error' => 'Fare rules not found for the selected flight.']);
+    }
+
+    // ✅ Fetch full itinerary data for richer flight segment and booking details
+    $items = [['type' => 'FLIGHT', 'resultIndex' => $resultIndex]];
+    $itineraryResult = $flightService->createItinerary($items, $traceId);
+    if (!$itineraryResult['status']) {
+        return back()->withErrors(['error' => 'Itinerary creation failed.']);
+    }
+
+    // dd($flight, $fareResult, $itineraryResult);
+    return view('flightdetails', [
+        'flight' => $flight,
+        'traceId' => $traceId,
+        'fareRules' => $fareResult['data'],
+        'itinerary' => $itineraryResult['data'],
+    ]);
+}
+
 
     public function searchLocations(Request $request)
     {

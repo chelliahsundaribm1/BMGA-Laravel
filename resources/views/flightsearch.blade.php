@@ -584,7 +584,9 @@
                                         $stopsCount = count($segments) - 1;
                                         $isNonStop = $stopsCount === 0;
                                         $stopCity = !$isNonStop ? $segments[0]['ds']['cN'] ?? '' : '';
-                                        $stopDetailText = $isNonStop ? 'Non-stop' : "{$stopsCount}-stop at {$stopCity}";
+                                        $stopDetailText = $isNonStop
+                                            ? 'Non-stop'
+                                            : "{$stopsCount} stop" . ($stopsCount > 1 ? 's' : '') . "<br>at {$stopCity}";
 
                                         $isRefundable = $flight['iR'] ?? false;
                                         $baggageAllowance = $firstSegment['bg'] ?? 'N/A';
@@ -663,7 +665,7 @@
                                                         <span class="text-muted small">{{ $durationFormatted }}</span>
                                                         <div class="border-top w-100 my-1"></div>
                                                         <span class="badge bg-light text-dark small">
-                                                            {{ $stopDetailText }}
+                                                            {!! $stopDetailText !!}
                                                         </span>
 
                                                     </div>
@@ -704,16 +706,17 @@
                                                     </div>
 
                                                     @if (!$isNonStop)
-                                                        <div class="text-end mt-1">
-                                                            <a href="javascript:void(0);" data-bs-toggle="collapse"
-                                                                data-bs-target="#stopDetail-{{ $flight['rI'] }}"
-                                                                class="small text-decoration-underline text-primary">
+                                                        <div class="dropdown d-flex justify-content-center mt-2">
+                                                            <button
+                                                                class="btn btn-outline-primary btn-sm dropdown-toggle w-100 d-flex align-items-center justify-content-center"
+                                                                type="button" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <i class="isax isax-route-square me-2"></i>
                                                                 View Stopover Details
-                                                            </a>
-                                                        </div>
+                                                            </button>
 
-                                                        <div class="collapse mt-2" id="stopDetail-{{ $flight['rI'] }}">
-                                                            <div class="p-3 border rounded bg-light">
+                                                            <div class="dropdown-menu p-3"
+                                                                style="width: 100%; max-width: 100%;">
                                                                 <strong class="d-block mb-2 text-primary">Stopover
                                                                     Details</strong>
                                                                 <ul class="mb-0 ps-3">
@@ -742,7 +745,6 @@
                                                                                         $nextSeg['or']['dT'],
                                                                                     )->format('M d, Y h:i A')
                                                                                     : 'N/A';
-
                                                                                 $airlineNext =
                                                                                     $nextSeg['al']['alN'] ??
                                                                                     'Unknown Airline';
@@ -771,10 +773,8 @@
                                                             </div>
                                                         </div>
                                                     @endif
+
                                                 </div>
-
-
-
 
                                                 <!-- Flight Features -->
                                                 <div class="dropdown d-flex justify-content-center">
